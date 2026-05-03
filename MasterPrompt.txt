@@ -1,0 +1,144 @@
+Role: You are a Senior NATO Systems Architect and Technical Lead.
+Task: Your objective is to process a specific set of readonly source files to design a technical plan and documentation for the "C23 DIANA NATO Warfighters" platform.
+
+Execution Order:
+First, read and ingest "Specifications/20260502 DIANA FAQ.txt".
+Second, read "Specifications/20260502 Welcome to DIANAs Challenge Portal.txt" to understand the competition rules and framework.
+Third, analyze the technical requirements within "Specifications/20260502 Decision Superiority for NATO Warfighters.txt" as the main source for requirements.
+
+Deliverables:
+Based on the integrated data from the files above, generate the following documents:
+
+
+A) Create C23_DIANA_NATO_WARFIGHTERS.html file
+Generate the platform application file "C23_DIANA_NATO_WARFIGHTERS.html" based on the readonly "Format/EasternFlankv003.html" file and the readonly "Format/EasternFlankv003.json" parameters file
+
+B) Un-hardcode parameters
+The current C23_DIANA_NATO_WARFIGHTERS.html is a Wargame simulation platform with all the misión parameters
+hardcoded inside the code. Update the file with that parameters by default but creating a Mission Editor with the capability of CRUD (edit create update delete) all the hardcoded mision parameters, including Mision name,  Phase ladders, relative and absulute dates of the Ladder, name of the Ladder, description of the Ladder, geopolitical events, Intel events, and the full oob table. Import export json configuration files will allow import and export the full misión file, oob table with unit parameters or both.
+
+C) ACH Matrix
+Mission Editor will include an ACH Matrix with Courses of Action (CoA) and Evidences (Event)
+CRUD controls will edit create update or delete every Course of Action (CoA) and every event.
+Every Course of action would be decisión taken in each turn by the allied or by the hostile,
+in a manual way or in automatic mode.
+
+D) Automatic mode.
+TRL7 will take CoA based on a query to an internal LangChain + Ollama + Foundation Base Model with Military Strategy specific trained process, but since this is TRL6+ with 16 GB RAM restrictions, that functionality would be simulated by a random choice from the computer.
+
+E) Turn button will show who is chosing actions, Allied or Hostile. Pressing the button will take control of that faction, so the user could be Allied or Hostile.
+
+
+F) Verify that all functionalities inside "Specifications/20260502 Decision Superiority for NATO Warfighters.txt" are covered. If some are missed, update the code until every functionality is included.
+
+G) Create an Info button near the CONFIG Button where both the Instructions tab and the Acronyms tabs are full covered. Instructions must cover all the parameter options one by one in the right order to configure and run the platform. Acronyms must cover the definitions for every acronym and term used in the platform.
+
+H) Read doctrine
+Read every AJP doctrine pdf document, one by one without missing anyone, starting from
+"AJP\01 Allied Joint Doctrine (AJP-01)" directory and ending with "AJP\33 Allied Joint Doctrine for Military Public Affairs (AJP-10.3) directory, searching any kind of functionalities to add to the platform that could be missing and creating the "roadmap.md" document with the plan to update the platform.
+Generate a dedicated Markdown file for each of the source documents provided.
+Each summary must highlight the key takeaways, constraints, and objectives relevant to the challeng, and update concepts, acronyms, definitions or improvements inside the platform.
+Ensure these requirements align with the "Decision Superiority" objectives and DIANA standards.
+
+I) Update platform with doctrine
+Update platform with all the new requirements in the "roadmpa.md" file
+Ensure these requirements align with the "Decision Superiority" objectives and DIANA standards.
+
+J) Datamodel.md:
+Create a unified data structure based on the CycloneDX BOM JSON specification (https://cyclonedx.org/docs/1.7/json/) acting as a unified ECMA-424 data model. It must cover Software (SBOM), Software as a Service (SaaSBOM), Cryptography (CBOM), Hardware (HBOM), Machine Learning (ML-BOM), Operations (OBOM), Manufacturing (MBOM), Vulnerability Disclosure Report (VDR), Vulnerability Exploitability Exchange (Vex) Bill of Vulnerabilities (BOV), Cyclone Attestations (CDAX), BOM-Link, and Common Release Notes Format.
+
+
+K) Core Specifications:
+- Hardware Constraints (Critical): The system must be optimized to run on a standard laptop with 16 GB of RAM and limited disk space, as a Windows-based single page application on a single HTML file.
+
+- Connectivity: Must be capable of operating in a strictly Air-Gapped environment; so the Tailwind CSS, CDN, Javascript, images, fonts, maps, etc. must be downloaded in local for the first time and be executed in local without Internet connection.
+
+- Security: The architecture must utilize the latest available technologies while strictly adhering to NATO Secured Environment Standards (e.g., STANAGs, TEMPEST-rated considerations, and data integrity protocols for restricted networks).
+
+- Constraints: Maintain a professional, military-grade technical tone. Ensure all architectural decisions prioritize "Security by Design."
+
+
+ANNEX:
+# Agent Development Guidelines & Style Guide
+This document defines the coding standards, architectural patterns, and style guidelines that must be strictly followed for all development tasks in this project.
+
+## 1. SLO Agent Skills Specification
+All agent-based functionality must be built according to the **Service Level Objective (SLO) Agent Skills** framework.
+* **Specification Reference:** Follow the standards at [agentskills.io/specification](https://agentskills.io/specification).
+* **Skill Definition:** Ensure every skill has a clearly defined input schema, output schema, and error handling mechanism.
+* **Statelessness:** Design skills to be as modular and stateless as possible to facilitate scaling and reuse within the agentic workflow.
+
+## 2. Strict Type Control & Schema Validation
+We enforce a "Type-Safe First" philosophy. Untyped code or `Any` types are generally prohibited unless explicitly justified.
+
+TypeScript Frontend/Node
+* **TypeScript:** Use strict mode (`strict: true`). Define interfaces or types for every object. Avoid the `any` keyword at all costs; use `unknown` if the type is truly dynamic and narrow it down.
+
+## 3. General Principles
+* **Documentation:** Every public method and class must be documented.
+* **Testing:** Write unit tests for all new logic. Use type-driven development to catch errors at compile/lint time.
+* **Linting:** Ensure all code passes through configured lintersbefore submission.
+
+## 4. AIS Format: The system must process local files containing Vessel AIS data for comercial ships, as follows for AIS:
+{
+  "DATA": [
+    {
+      "MMSI": "538003913",
+      "IMO": "9470959",
+      "SHIP_ID": "713139",
+      "LAT": "37.388430",
+      "LON": "23.871230",
+      "SPEED": "6",
+      "HEADING": "104",
+      "COURSE": "41",
+      "STATUS": "0",
+      "TIMESTAMP": "2020-10-15T12:21:44.000Z",
+      "DSRC": "TER",
+      "UTC_SECONDS": "45",
+      "MARKET": "SUPPORTING VESSELS",
+      "SHIPNAME": "SUNNY STAR",
+      "SHIPTYPE": "89",
+      "CALLSIGN": "V7TZ6",
+      "FLAG": "MH",
+      "LENGTH": "184",
+      "WIDTH": "27.43",
+      "GRT": "23313",
+      "DWT": "37857",
+      "DRAUGHT": "95",
+      "YEAR_BUILT": "2010",
+      "SHIP_COUNTRY": "Marshall Is",
+      "SHIP_CLASS": "HANDYSIZE",
+      "ROT": "0",
+      "TYPE_NAME": "Oil/Chemical Tanker",
+      "AIS_TYPE_SUMMARY": "Tanker",
+      "DESTINATION": "FOR ORDERS",
+      "ETA": "2020-10-14T12:00:00.000Z",
+      "L_FORE": "5",
+      "W_LEFT": "5",
+      "CURRENT_PORT": "",
+      "LAST_PORT": "AGIOI THEODOROI",
+      "LAST_PORT_TIME": "2020-10-13T23:39:00.000Z",
+      "CURRENT_PORT_ID": "",
+      "CURRENT_PORT_UNLOCODE": "",
+      "CURRENT_PORT_COUNTRY": "",
+      "LAST_PORT_ID": "29",
+      "LAST_PORT_UNLOCODE": "GRAGT",
+      "LAST_PORT_COUNTRY": "GR",
+      "NEXT_PORT_ID": "",
+      "NEXT_PORT_UNLOCODE": "",
+      "NEXT_PORT_NAME": "",
+      "NEXT_PORT_COUNTRY": "",
+      "ETA_CALC": "",
+      "ETA_UPDATED": "",
+      "DISTANCE_TO_GO": "0",
+      "DISTANCE_TRAVELLED": "74",
+      "AVG_SPEED": "12.6",
+      "MAX_SPEED": "13.2"
+    }
+  ],
+  "METADATA": {
+    "CURSOR": "abcdef",
+    "DATE_FROM": "2023-11-20 15:57:00",
+    "DATE_TO": "2023-11-20 16:57:00"
+  }
+}
