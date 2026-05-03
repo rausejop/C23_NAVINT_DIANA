@@ -1,0 +1,106 @@
+New Draft Proposal
+Challenge: Decision Superiority for NATO Warfighters
+Proposal Title  *
+Please provide the title of the technical solution you are proposing.
+
+
+Rafael Ausejo Prieto
+​	CONFIANZA23 INTELIGENCIA Y SEGURIDAD SL	 
+Upload a Video
+A video may be submitted as part of your application to provide a visual demonstration of your technical solution. This will be supplementary to the Short-Form Proposal and Long-Form Proposal. Whilst your application will be assessed primarily on the content of the written proposals, the video will be viewed by the evaluators for aiding understanding and providing context to your written proposal. The video shall address the following:
+
+A demonstration of the technical solution, including its applicability to potential defence use cases as outlined in the challenge statement. 
+This ideally would be in the form of a screen capture showing your digital solution in operation, with audio commentary outlining the salient features and functions.
+A demonstration or description of any features of the solution that enable third-party integrations. 
+The video must comply with the following requirements:
+
+The video must be of maximum four minutes duration.
+The description must be in the English language, the use of sub-titles is recommended.
+The video must be in .mp4 format and no larger than 100MB.
+Embed VideoNingún archivo seleccionado
+Proposal Information
+TRL Level  *
+Please select the Technology Readiness Level ("TRL") of the technical solution you are proposing to the challenge.
+
+
+System Type  *
+State whether your technical solution is software, hardware or a combination of both.
+
+
+System Level  *
+State whether your technical solution is by itself a platform or system, or whether it is a sub-system or component that would integrate into another system or platform.
+
+
+Short-Form Proposal
+Section 1: Technical Solution  *
+Describe your technical solution.
+Describe what is novel or unique about your technical solution.
+Section 2: Technical Alignment  *
+Describe how your solution aligns with the challenge statement, including the desired functional outcomes and list of exemplar effects.
+Describe the potential of your solution to augment the capabilities of an AI-enabled digital warfighting platform as described in the challenge statement. 
+Section 3: Integration  *
+Justify why your technical solution is Technology Readiness Level (TRL) 7 or above.
+Describe how your technical solution supports third-party integrations, for example through APIs, connectors, etc. Describe any previous or in-progress integrations.
+Section 4: Defence Use Case  *
+Describe the potential defence use case of your solution in the context of the challenge statement and the extent to which this has been validated or tested.
+Short-Form Images
+You may upload a maximum of two (2) images containing imagery or graphics. These images or graphics may contain words to signify elements within the images or graphs, however, they must not contain narrative text with explanations or commentary. Any images that are uploaded that attempt to supplement their proposal with additional narrative text may render the proposal non-compliant.
+
+Short-Form Image 1
+Drag a file here.
+Upload file from your computer.
+Ningún archivo seleccionado
+Short-Form Image 2
+Drag a file here.
+Upload file from your computer.
+Ningún archivo seleccionado
+Long-Form Proposal
+Section 1: Abstract  *
+Provide a short summary of your solution in one paragraph. Think of this as a written ‘elevator pitch’.
+Section 2: Technical Merit  *
+Describe your technical solution in detail.
+Describe how your solution aligns with the challenge statement. What elements of the challenge statement are you addressing?
+What is novel or unique about your solution? How does your approach compare to the existing state of the art and that of your competitors?
+Section 3: Technical Suitability  *
+Describe how your solution could augment the capabilities of an AI-enabled warfighting platform as described in the challenge statement.
+Justify why your technical solution is Technology Readiness Level 7 or above.
+Describe how your technical solution supports third-party integrations, for example through APIs, connectors etc. Describe any previous or in-progress integrations.
+Section 4: Defence and Security  *
+Describe the defence use case of your solution in the context of an AI-enabled warfighting platform as described in the challenge statement.
+If your solution were integrated and deployed within an AI-enabled warfighting platform, what would be the potential tactical, operational or strategic benefits?
+Section 5: Company and Commercial  *
+What is the financial status of your company in terms of revenue and investments, and what is your current financial runway?
+Describe the team and resources that would be dedicated to supporting an integration of your solution with the demonstration environment. What would be the risks to your ability to achieve the integration and demonstration and how would you mitigate any such risks? Describe your ability to deliver your solution to NATO customers if awarded follow-on contracts.
+In addition to the opportunity presented by this challenge, describe the potential addressable market segments for your technical solution in the civilian and defence sectors. What is your plan for exploiting the identified market segments?
+Long-Form Images
+You may upload a maximum of three (3) images containing imagery or graphics. These images or graphics may contain words to signify elements within the images or graphs, however, they must not contain narrative text with explanations or commentary. Any images that are uploaded that attempt to supplement their proposal with additional narrative text may render the proposal non-compliant.
+
+Long-Form Image 1
+Drag a file here.
+Upload file from your computer.
+Ningún archivo seleccionado
+Long-Form Image 2
+Drag a file here.
+Upload file from your computer.
+Ningún archivo seleccionado
+Long-Form Image 3
+Drag a file here.
+Upload file from your computer.
+Ningún archivo seleccionado
+Agreement to T&Cs  *
+In accordance with section 7.2(a) of the Terms and Conditions.
+
+I confirm I have read the Terms and Conditions of Bidding in full and agree to them.
+Confirmation of company identity  *
+This proposal is submitted by a user working for the company under which this proposal is registered; and this is the company that would enter into an agreement with DIANA if selected.
+Personnel Agreement  *
+I agree that the key personnel involved in the Step 3 - Virtual Panel Session, should that point be reached, will be directly involved in the accelerator programme and the required travel.
+Information Sharing
+Bidder Identity
+In accordance with Section 7.2(a) of the Terms and Conditions of Bidding, DIANA may share bidder identity with NATO and Allied stakeholders to foster further opportunities, unless you opt out of such sharing:
+
+
+Bidder Documentation
+In accordance with Section 7.2(b) of the Terms and Conditions of Bidding, DIANA may share bidder documentation with NATO and Allied stakeholders to foster further opportunities, unless you opt out of such sharing:
+
+

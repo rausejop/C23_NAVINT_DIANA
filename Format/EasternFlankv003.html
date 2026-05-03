@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NAVINT Baltic Sentry · Eastern Flank COP 2026</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<!-- Military symbology (APP-6 / MIL-STD-2525B) -->
+<script src="https://unpkg.com/milsymbol/dist/milsymbol.js"></script>
+
+<!-- React + Babel (pinned) -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<style>
+/* ───────────────────────────────────────────────────────────────
+   NAVINT Baltic Sentry · Eastern Flank COP
+   Official NATO C2 / Multidomain COP look & feel
+   Palette: NATO Blue (Reflex) #004990 · NATO Gold #FFC72C
+─────────────────────────────────────────────────────────────── */
+
+:root{
+  --bg-0:#04080f;
+  --bg-1:#070d18;
+  --bg-2:#0b1424;
+  --bg-3:#101c33;
+  --line:#152340;
+  --line-2:#22355c;
+  --ink:#e6edf7;
+  --ink-dim:#92a1bd;
+  --ink-mute:#5b6a87;
+
+  /* Official NATO colours */
+  --nato-blue:#004990;       /* NATO Reflex Blue */
+  --nato-blue-2:#0b62c4;
+  --nato-blue-3:#1b7be0;
+  --nato-gold:#FFC72C;       /* NATO Gold */
+  --nato-white:#ffffff;
+
+  /* COP semantic colours (APP-6/MIL-STD-2525 spirit) */
+  --allied:#3895FF;          /* friendly cyan-blue per NATO COP convention */
+  --hostile:#E63946;         /* hostile red */
+  --neutral:#74D85F;         /* neutral green */
+  --unknown:#FFD24A;         /* unknown yellow */
+  --mint:#7CD8A8;
+  --amber:#FFC72C;
+  --crimson:#E63946;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;height:100%;background:var(--bg-0);color:var(--ink);
+  font-family:"Roboto Condensed","IBM Plex Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;}
+.mono{font-family:"JetBrains Mono","Share Tech Mono",ui-monospace,monospace;letter-spacing:0.01em;}
+
+/* ── App scaffold ─────────────────────────────────────────── */
+.app{
+  display:grid;
+  grid-template-rows: 22px 96px 1fr;
+  height:100vh;
+  min-width:0;
+  overflow-x:hidden;
+  background:
+    radial-gradient(1200px 600px at 50% -10%, rgba(0,73,144,0.18), transparent 70%),
+    linear-gradient(180deg, #04080f 0%, #060c16 100%);
+}
+
+/* ── Classification banner ────────────────────────────────── */
+.classif{
+  display:flex; justify-content:space-between; align-items:center;
+  background:#0b8a4a; color:#fff;
+  font-weight:700; font-size:11px; letter-spacing:0.2em;
+  padding:0 14px; text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;
+  border-bottom:1px solid #0a6b3a;
+}
+.classif-mid{opacity:0.8;}
+
+/* ── Top bar — official NATO chrome ───────────────────────── */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 14px;
+  flex-wrap:nowrap; gap:12px; min-width:0;
+  background:
+    linear-gradient(90deg, var(--nato-blue) 0%, #0b3e7c 50%, #061a36 100%);
+  border-bottom:2px solid var(--nato-blue-3);
+  position:relative;
+}
+.nato-logo{height:42px; width:auto; filter: drop-shadow(0 0 8px rgba(96,165,250,0.7));}
+.topbar:before{
+  content:""; position:absolute; left:0; right:0; top:0; height:3px;
+  background:repeating-linear-gradient(90deg,
+    var(--nato-blue) 0 64px, var(--nato-gold) 64px 80px);
+  opacity:0.65;
+}
+.brand{display:flex;align-items:center;gap:14px;}
+
+/* NATO compass star (4-point) — official-style emblem placeholder */
+.nato-emblem{
+  width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+  background:var(--nato-blue); border:1.5px solid var(--nato-gold);
+  border-radius:50%;
+  box-shadow: 0 0 0 1px rgba(255,199,44,0.25), 0 0 18px rgba(0,73,144,0.6);
+}
+.nato-emblem svg{width:34px; height:34px;}
+
+.brand{display:flex; align-items:center; gap:14px; min-width:0;}
+.brand-text{display:flex; flex-direction:column; min-width:0;}
+.brand-line1{font-weight:700;letter-spacing:0.18em;font-size:14px;color:#fff;white-space:nowrap;}
+.brand-line1 .gold{color:var(--nato-gold);}
+.brand-line1 .muted{color:#a9c4ea;font-weight:500;}
+.brand-line2{font-family:"JetBrains Mono",monospace;font-size:10px;color:#a9c4ea;letter-spacing:0.16em;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+.topbar-meta{display:flex;gap:8px;}
+.meta-block{
+  display:flex;flex-direction:column; padding:6px 12px; min-width:120px;
+  background:rgba(7,16,33,0.6); border:1px solid rgba(255,199,44,0.25); border-radius:2px;
+  line-height:1.15;
+}
+.meta-label{font-size:9.5px;letter-spacing:0.22em;color:var(--nato-gold);font-weight:700;}
+.meta-val{font-size:13.5px;color:#fff;margin-top:2px;font-weight:700;}
+.threat .meta-val{font-weight:700;}
+.threat-green .meta-val{color:var(--mint);}
+.threat-yellow .meta-val{color:#f5d65e;}
+.threat-orange .meta-val{color:#ff9b3a;}
+.threat-red .meta-val{color:var(--hostile);}
+
+.topbar-actions{display:flex;gap:8px;}
+.btn-ghost,.btn-danger,.btn-ghost-sm{
+  border:1px solid rgba(255,199,44,0.5); background:rgba(0,73,144,0.4); color:#fff;
+  padding:7px 14px; font-weight:700; letter-spacing:0.16em; font-size:11px;
+  cursor:pointer; border-radius:2px; transition: all .15s;
+  font-family:"Roboto Condensed", inherit; white-space:nowrap;
+  text-transform:uppercase;
+}
+.btn-ghost:hover{border-color:var(--nato-gold); background:rgba(0,73,144,0.7); box-shadow:0 0 12px rgba(255,199,44,0.25);}
+.btn-danger{border-color:var(--hostile); color:#ffd6d3; background:rgba(180,40,30,0.4);}
+.btn-danger:hover{background:rgba(180,40,30,0.7); box-shadow:0 0 12px rgba(230,57,70,0.45);}
+.btn-ghost-sm{padding:5px 11px; font-size:10.5px;}
+.btn-ghost-sm[disabled]{opacity:0.4; cursor:not-allowed;}
+
+/* ── Workbench grid ───────────────────────────────────────── */
+.workbench{
+  display:grid;
+  grid-template-columns: 300px minmax(0,1fr) 340px;
+  grid-template-rows: 1fr 168px;
+  min-height:0;
+  min-width:0;
+  overflow:hidden;
+}
+@media (max-width: 1400px){
+  .workbench{ grid-template-columns: 280px minmax(0,1fr) 300px; }
+}
+@media (max-width: 1100px){
+  .workbench{ grid-template-columns: 280px minmax(0,1fr) 280px; }
+  .brand-line2{display:none;}
+  .topbar-meta{display:none;}
+  .topbar{padding:0 10px;}
+  .btn-ghost,.btn-danger{padding:6px 10px; font-size:10.5px; letter-spacing:0.12em;}
+}
+@media (max-width: 900px){
+  .meta-block{min-width:0; padding:4px 8px;}
+}
+
+/* ── LEFT RAIL ────────────────────────────────────────────── */
+.rail{
+  grid-column: 1;
+  grid-row: 1 / 3;
+  min-width:0; overflow-x:hidden;
+  background:linear-gradient(180deg,#08111f, #060c16);
+  border-right:1px solid var(--line);
+  overflow-y:auto;
+  padding:12px;
+  display:flex; flex-direction:column; gap:12px;
+}
+.rail-sec{
+  background:#091525; border:1px solid var(--line); border-radius:3px;
+  padding:11px 12px;
+  position:relative;
+}
+.rail-sec:before{
+  content:""; position:absolute; left:0; top:8px; bottom:8px; width:2px;
+  background:linear-gradient(180deg, var(--nato-gold), transparent 70%);
+}
+.sec-head{
+  font-size:10.5px; letter-spacing:0.22em; font-weight:700;
+  color:var(--nato-gold); margin-bottom:10px; padding-bottom:8px;
+  border-bottom:1px dashed var(--line); display:flex; gap:10px; align-items:center;
+}
+.sec-n{
+  font-family:"JetBrains Mono",monospace; color:var(--nato-blue-3);
+  background:rgba(0,73,144,0.18); border:1px solid rgba(0,73,144,0.5); padding:1px 6px; border-radius:2px;
+  font-size:10px;
+}
+
+/* ── Phase ladder ─────────────────────────────────────────── */
+.phase-ladder{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:0;}
+.phase-step{position:relative; padding:8px 0 16px 22px; cursor:default;}
+.phase-step .phase-rail-dot{
+  position:absolute; left:5px; top:11px; width:10px; height:10px; border-radius:50%;
+  background:#091525; border:1.5px solid var(--ink-mute);
+}
+.phase-step .phase-rail-line{
+  position:absolute; left:9.5px; top:21px; width:1.5px; bottom:-2px; background:var(--line);
+}
+.phase-step:last-child .phase-rail-line{display:none;}
+.phase-step.state-done .phase-rail-dot{background:var(--mint);border-color:var(--mint);}
+.phase-step.state-done .phase-rail-line{background:var(--mint);opacity:0.5;}
+.phase-step.state-active .phase-rail-dot{background:var(--nato-gold);border-color:var(--nato-gold);
+  box-shadow:0 0 0 3px rgba(255,199,44,0.25);}
+.phase-step.state-pending{cursor:pointer;}
+.phase-step.state-pending:hover .phase-rail-dot{border-color:var(--nato-gold);}
+
+.phase-head{display:flex;align-items:center;gap:8px;font-size:12.5px;}
+.phase-code{color:var(--nato-gold);font-weight:700;}
+.phase-name{font-weight:700;letter-spacing:0.12em;color:#fff;}
+.phase-status{
+  margin-left:auto; font-size:9px; letter-spacing:0.16em; padding:1px 6px;
+  border-radius:2px; font-family:"JetBrains Mono",monospace; font-weight:700;
+}
+.phase-status.state-done{color:var(--mint); background:rgba(124,216,168,0.10); border:1px solid rgba(124,216,168,0.35);}
+.phase-status.state-active{color:var(--nato-gold); background:rgba(255,199,44,0.12); border:1px solid rgba(255,199,44,0.45);}
+.phase-status.state-pending{color:var(--ink-mute); background:rgba(91,102,117,0.08); border:1px solid var(--line-2);}
+.phase-blurb{color:var(--ink-dim);font-size:11.5px;line-height:1.45;margin:6px 0 0;}
+
+/* ── Force tally ──────────────────────────────────────────── */
+.tally{display:flex;flex-direction:column;gap:8px;}
+.tally-row{
+  display:flex; align-items:center; gap:10px;
+  background:#0a1325; border:1px solid var(--line); border-radius:3px; padding:8px 10px;
+}
+.tally-row.side-NATO{border-left:3px solid var(--allied);}
+.tally-row.side-OPFOR{border-left:3px solid var(--hostile);}
+.tally-side{font-size:10px; letter-spacing:0.14em; font-weight:700; width:54px; flex:0 0 auto;}
+.side-NATO .tally-side{color:var(--allied);}
+.side-OPFOR .tally-side{color:var(--hostile);}
+.tally-bars{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;flex:1;}
+.tally-cell{background:#0d1a30; border:1px solid var(--line); padding:4px 6px; text-align:center;}
+.tally-d{font-size:9px; color:var(--ink-mute); letter-spacing:0.16em;font-weight:700;}
+.tally-v{font-size:14px; color:#fff; font-weight:700; line-height:1.1;}
+
+/* ── Filter chips ─────────────────────────────────────────── */
+.filters{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10.5px;letter-spacing:0.16em;font-weight:700;
+  padding:4px 9px; border:1px solid var(--line-2); border-radius:2px;
+  background:#0a1325; color:var(--ink-mute); cursor:pointer; user-select:none;
+}
+.chip input{display:none;}
+.chip.on{color:#fff; border-color:var(--nato-blue-3); background:#102146;}
+.chip.side-NATO.on{border-color:var(--allied); color:var(--allied);}
+.chip.side-OPFOR.on{border-color:var(--hostile); color:var(--hostile); background:#2a0f10;}
+.layer-toggles{display:flex; flex-direction:column; gap:6px; margin-top:6px;
+  font-size:11.5px; color:var(--ink-dim);}
+.layer-toggles label{display:flex; gap:8px; align-items:center; cursor:pointer;}
+.layer-toggles input{accent-color:var(--nato-gold);}
+
+/* ── Stage / map ──────────────────────────────────────────── */
+.stage{ grid-column: 2; grid-row: 1; position:relative; background:#020407; min-width:0; }
+.map{ position:absolute; inset:0; background:#0a121d; }
+/* Cross-hair grid overlay for C2 feel */
+.map:before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:400;
+  background:
+    linear-gradient(rgba(255,199,44,0.05) 1px, transparent 1px) 0 0/120px 120px,
+    linear-gradient(90deg, rgba(255,199,44,0.05) 1px, transparent 1px) 0 0/120px 120px;
+  mix-blend-mode: screen;
+}
+.map:after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(7,10,15,0.10), rgba(7,10,15,0.0) 30%, rgba(7,10,15,0.20));
+  pointer-events:none;
+}
+
+/* HUD pills */
+.hud{position:absolute; z-index:500; display:flex; gap:6px; flex-direction:column; pointer-events:none;}
+.hud-tl{top:12px; left:12px;}
+.hud-tr{top:12px; right:12px; align-items:flex-end;}
+.hud-bl{bottom:12px; left:12px;}
+.hud-pill{
+  display:inline-flex; gap:8px; align-items:center;
+  background:rgba(7,16,33,0.88); border:1px solid rgba(255,199,44,0.4);
+  padding:5px 10px; border-radius:2px; backdrop-filter: blur(4px);
+  font-size:10.5px;
+}
+.hud-k{color:var(--nato-gold); letter-spacing:0.18em; font-weight:700; font-size:9.5px;}
+.hud-v{color:#fff; font-size:11px;}
+
+.grid-key{
+  display:flex; gap:14px; align-items:center;
+  background:rgba(7,16,33,0.88); border:1px solid rgba(255,199,44,0.35);
+  padding:6px 10px; font-size:10px; letter-spacing:0.14em; font-weight:700;
+  color:var(--ink-dim);
+}
+.grid-key .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; vertical-align:middle;}
+.grid-key .dot.allied{background:var(--allied);}
+.grid-key .dot.hostile{background:var(--hostile);}
+.grid-key .dot.mint{background:var(--mint);}
+.grid-key .dash{display:inline-block; width:18px; height:0; border-top:2px dashed var(--hostile); margin-right:5px; vertical-align:middle;}
+
+/* Phase gate */
+.phase-gate{
+  position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+  display:flex; gap:8px; z-index:600;
+  background:rgba(7,16,33,0.94); border:1px solid var(--nato-gold); border-radius:2px;
+  padding:6px; backdrop-filter:blur(4px);
+  box-shadow: 0 0 20px rgba(255,199,44,0.15);
+}
+.gate-card{display:flex; flex-direction:column; padding:6px 12px; min-width:140px;}
+.gate-label{font-size:9px; letter-spacing:0.22em; color:var(--nato-gold); font-weight:700;}
+.gate-now{font-size:12px; color:#fff; font-weight:700; margin-top:2px;}
+.gate-btn{
+  display:flex; flex-direction:column; align-items:flex-start;
+  background:linear-gradient(180deg, var(--nato-blue-2), var(--nato-blue));
+  border:1px solid var(--nato-gold); color:#fff; cursor:pointer;
+  padding:6px 14px; border-radius:2px; transition: all .15s;
+  font-family:inherit;
+}
+.gate-btn:hover{background:linear-gradient(180deg, var(--nato-blue-3), var(--nato-blue-2)); box-shadow:0 0 0 2px rgba(255,199,44,0.30);}
+.gate-cta{font-size:11px; letter-spacing:0.16em; color:#fff; font-weight:700;}
+.gate-name{font-size:10px; letter-spacing:0.14em; color:#cfe2ff; font-weight:600; margin-top:1px;}
+
+/* Leaflet divIcon reset */
+.leaflet-div-icon {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* APP-6 / MIL-STD-2525 DivIcons - Replicated from COP 2026 */
+.unit-marker-app6 {
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.8));
+}
+
+.unit-marker-app6:hover {
+    transform: scale(1.2);
+    z-index: 1000 !important;
+}
+
+.unit-marker-app6 svg {
+    display: block;
+}
+
+/* A2/AD pulse */
+@keyframes a2adpulse {
+  0%{stroke-opacity:0.85;} 50%{stroke-opacity:0.35;} 100%{stroke-opacity:0.85;}
+}
+.a2ad-circle, .a2ad-circle-inner{ animation: a2adpulse 3s ease-in-out infinite; }
+
+/* ── DOSSIER ──────────────────────────────────────────────── */
+.dossier{
+  grid-column: 3;
+  grid-row: 1 / 3;
+  background:linear-gradient(180deg,#08111f,#060c16);
+  border-left:1px solid var(--line);
+  display:flex; flex-direction:column; min-height:0;
+}
+.dossier-head{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 14px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#0a1426,#091321);
+}
+.dh-title{font-weight:700; letter-spacing:0.22em; font-size:11.5px; color:var(--nato-gold);}
+.dh-sub{font-size:10px; color:var(--ink-mute); letter-spacing:0.18em; margin-top:2px;}
+.dossier-body{ flex:1; overflow-y:auto; padding:12px; display:flex; flex-direction:column; gap:10px; }
+
+.dossier-empty{
+  text-align:center; color:var(--ink-mute);
+  padding:48px 12px; border:1px dashed var(--line); border-radius:3px;
+}
+.empty-glyph{font-size:36px; color:var(--line-2); margin-bottom:12px;}
+.empty-title{font-weight:700; letter-spacing:0.18em; font-size:11.5px; color:var(--ink-dim);}
+.empty-hint{font-size:11px; margin-top:6px; line-height:1.5; color:var(--ink-mute);}
+
+.d-card{
+  background:#0a1426; border:1px solid var(--line); border-radius:3px;
+  padding:10px 12px; position:relative; transition: all .15s;
+}
+.d-card.side-NATO{ border-left:3px solid var(--allied); }
+.d-card.side-OPFOR{ border-left:3px solid var(--hostile); }
+.d-card.selected{ box-shadow: 0 0 0 1px var(--nato-gold); }
+
+.d-card-head{display:flex; gap:10px; align-items:flex-start; margin-bottom:8px;}
+.d-symbol{ flex:0 0 40px; height:40px; display:flex; align-items:center; justify-content:center; }
+.d-id{ flex:1; min-width:0; }
+.d-desig{ font-size:12.5px; font-weight:700; line-height:1.25; color:#fff;}
+.d-meta{ font-size:10px; color:var(--ink-mute); margin-top:3px; letter-spacing:0.06em; }
+.d-x{
+  background:transparent; color:var(--ink-mute); border:1px solid var(--line);
+  width:22px; height:22px; cursor:pointer; border-radius:2px;
+  display:flex; align-items:center; justify-content:center; font-size:14px; line-height:1;
+}
+.d-x:hover{color:var(--hostile); border-color:var(--hostile);}
+
+.d-row{display:flex; gap:8px; margin-top:5px; font-size:11.5px;}
+.d-row.d-stack{flex-direction:column; gap:3px;}
+.d-k{ width:78px; flex:0 0 auto; color:var(--nato-gold); font-size:10px; letter-spacing:0.18em; font-weight:700; padding-top:1px;}
+.d-v{ color:var(--ink); }
+.d-v.status-operational{color:var(--mint);}
+.d-v.status-engaging{color:var(--amber);}
+.d-v.status-disrupted{color:var(--hostile);}
+
+.d-eq{margin:2px 0 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:4px;}
+.d-eq li{
+  font-family:"JetBrains Mono",monospace; font-size:10.5px;
+  background:#0a1426; border:1px solid var(--line); padding:2px 7px; border-radius:2px;
+  color:var(--ink-dim);
+}
+.d-mission{font-size:11.5px; color:var(--ink-dim); line-height:1.45; padding-top:3px;}
+
+/* ── COMMAND LOG ──────────────────────────────────────────── */
+.cmdlog{
+  grid-column: 2;
+  grid-row: 2;
+  background:#02050b; border-top:2px solid var(--nato-gold);
+  display:flex; flex-direction:column; min-height:0;
+  box-shadow: inset 0 12px 24px rgba(0,73,144,0.15);
+}
+.cmdlog-bar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:6px 14px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#06101e,#040910);
+}
+.cmdlog-title{font-weight:700; letter-spacing:0.22em; font-size:11px; color:var(--nato-gold);}
+.cmdlog-meta{font-size:10px; color:var(--ink-mute); letter-spacing:0.16em;}
+.cmdlog-stream{
+  flex:1; overflow-y:auto; padding:8px 14px; font-size:11.5px; line-height:1.55;
+  font-family:"Share Tech Mono","JetBrains Mono",monospace;
+  background:repeating-linear-gradient(180deg, transparent 0 22px, rgba(255,255,255,0.014) 22px 23px);
+}
+.logline{display:grid; grid-template-columns: 80px 78px 1fr; gap:10px;}
+.lts{color:#3d6e8c;}
+.lpfx{font-weight:700; letter-spacing:0.10em;}
+.pfx-C4ISR{color:var(--allied);}
+.pfx-ISTAR{color:var(--mint);}
+.pfx-ELINT{color:var(--amber);}
+.pfx-SACEUR{color:#c8a8ff;}
+.pfx-SYS{color:var(--ink-dim);}
+.lmsg{color:#c8e3ff;}
+.tone-warn .lmsg{color:#ffd28a;}
+.tone-alert .lmsg{color:#ff9c8e;}
+
+/* ── CONFIG MODAL ─────────────────────────────────────────── */
+.modal-bg{position:fixed; inset:0; background:rgba(2,4,7,0.85); z-index:9000;
+  display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);}
+.modal{
+  width:min(960px, 92vw); max-height:88vh;
+  background:#0a1426; border:1px solid var(--nato-gold); border-radius:3px;
+  display:flex; flex-direction:column;
+  box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,73,144,0.4);
+}
+.modal-head{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 18px; border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,var(--nato-blue),#001f44);
+}
+.modal-title{font-weight:700; letter-spacing:0.22em; font-size:13px; color:#fff;}
+.modal-sub{font-size:10.5px; color:var(--nato-gold); letter-spacing:0.16em; margin-top:2px;}
+.modal-x{background:transparent; border:1px solid rgba(255,199,44,0.5); color:#fff;
+  width:30px; height:30px; cursor:pointer; border-radius:2px; font-size:18px;}
+.modal-x:hover{color:var(--hostile); border-color:var(--hostile);}
+.modal-body{padding:16px 18px; overflow-y:auto;}
+.cfg-sec{margin-bottom:18px;}
+.cfg-sec h4{
+  font-size:10.5px; letter-spacing:0.22em; color:var(--nato-gold); font-weight:700;
+  margin:0 0 8px; padding-bottom:6px; border-bottom:1px dashed var(--line);
+}
+.seg{display:flex; gap:0;}
+.seg-b{
+  border:1px solid var(--line-2); background:#0a1426; color:var(--ink-dim);
+  padding:7px 16px; font-size:11px; letter-spacing:0.16em; font-weight:700;
+  cursor:pointer; text-transform:uppercase; font-family:inherit;
+}
+.seg-b:not(:first-child){border-left:none;}
+.seg-b:first-child{border-radius:2px 0 0 2px;}
+.seg-b:last-child{border-radius:0 2px 2px 0;}
+.seg-b.on{background:var(--nato-blue); color:#fff; border-color:var(--nato-gold);}
+
+.oob-table{font-size:11px; border:1px solid var(--line); border-radius:3px;
+  max-height:240px; overflow-y:auto;}
+.oob-th, .oob-tr{display:grid; grid-template-columns: 60px 70px 80px 1fr 160px; padding:6px 10px; gap:8px;}
+.oob-th{background:#0c1a30; color:var(--nato-gold); letter-spacing:0.18em; font-weight:700; font-size:10px; position:sticky; top:0; border-bottom:1px solid var(--line);}
+.oob-tr{border-bottom:1px solid var(--bg-1); align-items:center;}
+.oob-tr:hover{background:rgba(0,73,144,0.18);}
+.oob-tr.side-NATO span:nth-child(2){color:var(--allied);}
+.oob-tr.side-OPFOR span:nth-child(2){color:var(--hostile);}
+.oob-desig{color:#fff;}
+.badges{display:flex; flex-wrap:wrap; gap:5px;}
+.badge{
+  background:#0a1426; border:1px solid rgba(255,199,44,0.35); color:var(--nato-gold);
+  padding:3px 9px; border-radius:2px; font-size:10.5px; letter-spacing:0.10em;
+}
+
+input[type=range]{width:100%; accent-color:var(--nato-gold);}
+
+/* Density variations */
+[data-density="compact"] .rail-sec{padding:9px;}
+[data-density="compact"] .d-card{padding:8px 10px;}
+[data-density="spacious"] .rail-sec{padding:16px;}
+[data-density="spacious"] .d-card{padding:14px 16px;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:#06101e;}
+::-webkit-scrollbar-thumb{background:#1a2a48; border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:#22355c;}
+
+/* Leaflet overrides */
+.leaflet-control-zoom a{
+  background:#0a1426 !important; color:#fff !important;
+  border:1px solid rgba(255,199,44,0.35) !important;
+  font-family:inherit !important;
+}
+.leaflet-control-zoom a:hover{background:var(--nato-blue) !important; color:#fff !important;}
+
+/* ── OOB MANAGER MODAL — wide variant ─────────────────────── */
+.modal.modal-wide{ width:min(1280px, 96vw); max-height:90vh; }
+
+.cfg-tabs{
+  display:flex; gap:0; padding:0 18px;
+  background:#06122a; border-bottom:1px solid var(--line);
+}
+.cfg-tab{
+  background:transparent; border:none; border-bottom:2px solid transparent;
+  color:var(--ink-dim); font-family:inherit; font-weight:700;
+  letter-spacing:0.18em; font-size:11.5px; padding:11px 18px;
+  cursor:pointer; text-transform:uppercase;
+}
+.cfg-tab:hover{color:#fff;}
+.cfg-tab.on{color:var(--nato-gold); border-bottom-color:var(--nato-gold); background:rgba(0,73,144,0.25);}
+
+/* ── OOB toolbar ──────────────────────────────────────────── */
+.oob-toolbar{
+  display:flex; gap:10px; align-items:center; margin-bottom:10px;
+}
+.oob-search{
+  flex:1; background:#070f22; color:var(--ink); border:1px solid var(--line-2);
+  padding:7px 11px; font-family:"JetBrains Mono",monospace; font-size:12px;
+  border-radius:2px;
+}
+.oob-search:focus{outline:none; border-color:var(--nato-gold); box-shadow:0 0 0 2px rgba(255,199,44,0.18);}
+.oob-count{font-size:11px; color:var(--ink-mute); letter-spacing:0.16em;}
+
+.btn-create{
+  background:#0d3a2a; color:#7ce8b3; border:1px solid #16a35e;
+  padding:7px 14px; font-family:inherit; font-weight:700; cursor:pointer;
+  letter-spacing:0.18em; font-size:11px; border-radius:2px;
+}
+.btn-create:hover{background:#0f5238; box-shadow:0 0 10px rgba(22,163,94,0.4);}
+
+.btn-edit{
+  background:#0d2348; color:#9bc7ff; border:1px solid var(--nato-blue-3);
+  padding:4px 10px; font-family:inherit; font-weight:700; cursor:pointer;
+  letter-spacing:0.14em; font-size:10px; border-radius:2px; margin-right:4px;
+}
+.btn-edit:hover{background:var(--nato-blue);}
+.btn-del{
+  background:#3a0e10; color:#ffb1ad; border:1px solid var(--hostile);
+  padding:4px 10px; font-family:inherit; font-weight:700; cursor:pointer;
+  letter-spacing:0.14em; font-size:10px; border-radius:2px;
+}
+.btn-del:hover{background:#5a1418;}
+.btn-sm{font-size:10px;}
+
+/* ── CRUD table ───────────────────────────────────────────── */
+.crud-wrap{
+  border:1px solid var(--line); border-radius:3px;
+  max-height:55vh; overflow:auto;
+}
+.crud-table{ width:100%; border-collapse:collapse; font-size:11.5px; }
+.crud-table th{
+  background:#06122a; color:var(--nato-gold); text-align:left;
+  padding:9px 8px; border-bottom:1px solid var(--line-2);
+  font-size:10px; letter-spacing:0.18em; font-weight:700;
+  position:sticky; top:0; z-index:2;
+}
+.crud-table td{
+  padding:6px 8px; border-bottom:1px solid #0e1a31; color:var(--ink);
+  vertical-align:middle;
+}
+.crud-table tr:hover td{background:rgba(0,73,144,0.18);}
+.crud-table tr.side-NATO td:nth-child(2){color:var(--allied);}
+.crud-table tr.side-OPFOR td:nth-child(2){color:var(--hostile);}
+.crud-sym{display:flex; align-items:center; justify-content:center; width:28px; height:28px;}
+.crud-sym svg{width:24px; height:24px;}
+.crud-desig{color:#fff; font-weight:600; max-width:240px;}
+.crud-sidc{font-size:10.5px; color:var(--ink-dim);}
+
+.pill{
+  display:inline-block; padding:2px 7px; font-size:9.5px; font-weight:700;
+  letter-spacing:0.14em; border-radius:2px; border:1px solid;
+}
+.pill.side-NATO{ color:var(--allied); border-color:rgba(56,149,255,0.5); background:rgba(56,149,255,0.08);}
+.pill.side-OPFOR{ color:var(--hostile); border-color:rgba(230,57,70,0.5); background:rgba(230,57,70,0.08);}
+
+.status-pill{
+  display:inline-block; padding:2px 7px; font-size:9.5px; font-weight:700;
+  letter-spacing:0.14em; border-radius:2px; border:1px solid var(--line-2);
+  background:#0a1426; color:var(--ink-dim);
+}
+.status-pill.st-operational{color:var(--mint); border-color:rgba(124,216,168,0.4);}
+.status-pill.st-engaging{color:var(--amber, #ffb33a); border-color:rgba(255,179,58,0.4);}
+.status-pill.st-disrupted{color:var(--hostile); border-color:rgba(230,57,70,0.4);}
+.status-pill.st-destroyed{color:#ff7a7a; background:#2a0c0e; border-color:var(--hostile);}
+
+/* ── CREATE / EDIT FORM ───────────────────────────────────── */
+.form-bar{
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--line);
+}
+.form-bar h4{margin:0; color:var(--nato-gold); letter-spacing:0.20em; font-size:12px;}
+.sidc-prev{
+  display:flex; align-items:center; gap:10px;
+  background:#06122a; border:1px solid var(--line-2); padding:6px 12px; border-radius:2px;
+}
+.sidc-prev svg{width:38px; height:38px;}
+
+.form-grid{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:10px 14px;
+}
+.fld{display:flex; flex-direction:column; gap:4px;}
+.fld-full{grid-column:1 / -1;}
+.fld-label{
+  font-size:10px; color:var(--ink-mute); letter-spacing:0.18em; font-weight:700;
+  text-transform:uppercase;
+}
+.fld .req{color:var(--hostile); margin-left:4px;}
+.fld input, .fld select, .fld textarea{
+  background:#070f22; color:var(--ink); border:1px solid var(--line-2);
+  padding:7px 10px; font-family:"JetBrains Mono",monospace; font-size:12px;
+  border-radius:2px;
+}
+.fld input:focus, .fld select:focus, .fld textarea:focus{
+  outline:none; border-color:var(--nato-gold); box-shadow:0 0 0 2px rgba(255,199,44,0.18);
+}
+.fld textarea{resize:vertical; min-height:46px;}
+
+.form-actions{
+  display:flex; gap:10px; margin-top:18px; padding-top:14px;
+  border-top:1px solid var(--line);
+}
+
+/* ── IMPORT / EXPORT cards ────────────────────────────────── */
+.io-card{
+  background:#06122a; border:1px solid var(--line-2); border-radius:3px;
+  padding:14px 16px; margin-bottom:12px;
+}
+.io-card h4{
+  margin:0 0 6px 0; color:var(--nato-gold);
+  font-size:11.5px; letter-spacing:0.20em; font-weight:700;
+}
+.io-blurb{
+  font-size:11.5px; color:var(--ink-dim); line-height:1.5; margin:0 0 10px 0;
+}
+.io-file{
+  font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--ink-dim);
+}
+.leaflet-control-attribution{
+  background:rgba(7,16,33,0.7) !important; color:var(--ink-mute) !important;
+  font-size:9.5px !important; padding:2px 6px !important;
+}
+.leaflet-tooltip{
+  background:#0a1426 !important; color:#fff !important;
+  border:1px solid var(--nato-gold) !important; font-family:inherit !important;
+  font-size:10.5px !important; padding:5px 8px !important;
+}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+// NAVINT Baltic Sentry / Eastern Flank — Order of Battle (OOB)
+// Open-source unclassified composition for training/wargame use.
+
+window.INITIAL_OOB = [
+  // ─── NATO LAND ───────────────────────────────────────────────
+  { id:"n01", sidc:"SFGPUCA----E---", side:"NATO", domain:"LAND", designation:"eFP BG Estonia (UK-led)", type:"Armored",
+    equipment:["Challenger 3 MBT","CV90 IFV","AS90 SPH"],
+    mission:"Tactical Defense / Forward Deterrence - Tapa", status:"Operational",
+    coordinates:{lat:59.26,lng:25.97}, echelon:"BG" },
+  { id:"n02", sidc:"SFGPUCIZ---E---", side:"NATO", domain:"LAND", designation:"eFP BG Latvia (CA-led)", type:"Mechanized",
+    equipment:["Leopard 2A6 MBT","LAV 6.0","Spike ATGM"],
+    mission:"Tactical Defense / MN Bde Latvia - Ādaži", status:"Operational",
+    coordinates:{lat:57.08,lng:24.35}, echelon:"BG" },
+  { id:"n03", sidc:"SFGPUCA----F---", side:"NATO", domain:"LAND", designation:"45. Panzer Bde 'Litauen' (DE)", type:"Armored",
+    equipment:["Leopard 2A8 MBT","Puma IFV","PzH 2000"],
+    mission:"Permanent Forward Presence Lithuania - Rukla", status:"Operational",
+    coordinates:{lat:55.08,lng:24.19}, echelon:"BDE" },
+  { id:"n04", sidc:"SFGPUCA----G---", side:"NATO", domain:"LAND", designation:"16th Pomeranian Mech Div (PL)", type:"Armored",
+    equipment:["M1A2 SEPv3 Abrams","K2 Black Panther","K9 Thunder SPH"],
+    mission:"Suwalki Corridor Defense / Masuria - Olsztyn", status:"Operational",
+    coordinates:{lat:53.78,lng:20.48}, echelon:"DIV" },
+  { id:"n05", sidc:"SFGPUCA----G---", side:"NATO", domain:"LAND", designation:"18th Mech Div 'Iron' (PL)", type:"Armored",
+    equipment:["M1A1 FEP Abrams","Rosomak APC","Homar-K MLRS"],
+    mission:"Strategic Reserve / Eastern Shield - Siedlce", status:"Operational",
+    coordinates:{lat:52.17,lng:22.27}, echelon:"DIV" },
+  { id:"n06", sidc:"SFGPUCIZ---E---", side:"NATO", domain:"LAND", designation:"US Rotational BCT (2ABCT/1AD)", type:"Mechanized",
+    equipment:["M1A2 SEPv3","M2A4 Bradley","M109A7 Paladin","HIMARS"],
+    mission:"SWORD 26 / Saber Strike - Pabradė LTU", status:"Operational",
+    coordinates:{lat:54.98,lng:25.78}, echelon:"BCT" },
+
+  // ─── NATO AIR ────────────────────────────────────────────────
+  { id:"na01", sidc:"SFAPMFF--------", side:"NATO", domain:"AIR", designation:"BAP Šiauliai - French Rafale Det", type:"Fighter",
+    equipment:["4x Dassault Rafale C/B"],
+    mission:"Baltic Air Policing QRA - Šiauliai AB, LTU", status:"Operational",
+    coordinates:{lat:55.89,lng:23.39}, echelon:"DET" },
+  { id:"na02", sidc:"SFAPMFF--------", side:"NATO", domain:"AIR", designation:"BAP Ämari - Portuguese F-16M Det", type:"Fighter",
+    equipment:["4x F-16AM/BM MLU"],
+    mission:"Baltic Air Policing QRA - Ämari AB, EST", status:"Operational",
+    coordinates:{lat:59.26,lng:24.21}, echelon:"DET" },
+  { id:"na03", sidc:"SFAPMFQ--------", side:"NATO", domain:"AIR", designation:"P-3C Orion / P-8A MPA Det", type:"Maritime Patrol",
+    equipment:["P-8A Poseidon","Sonobuoys","AGM-84 Harpoon"],
+    mission:"Baltic Sentry / ASW & ISR", status:"Operational",
+    coordinates:{lat:58.2,lng:22.5}, echelon:"DET" },
+
+  // ─── NATO NAVAL ──────────────────────────────────────────────
+  { id:"nn01", sidc:"SFSPCLFF-------", side:"NATO", domain:"SEA", designation:"SNMG1 Flagship (DNK Frigate)", type:"Frigate",
+    equipment:["Iver Huitfeldt-class FFG","SM-2 / ESSM","Harpoon SSM"],
+    mission:"SNMG1 - Baltic Sea Patrol", status:"Operational",
+    coordinates:{lat:56.5,lng:19.8}, echelon:"FFG" },
+  { id:"nn02", sidc:"SFSPCLFF-------", side:"NATO", domain:"SEA", designation:"ESPS Castilla (ESP LHD)", type:"Amphibious",
+    equipment:["Castilla LHD","Embarked Marine BN","SH-60B"],
+    mission:"STEADFAST DART 26 / ARF Maritime", status:"Operational",
+    coordinates:{lat:55.6,lng:18.5}, echelon:"LHD" },
+  { id:"nn03", sidc:"SFSPCLFF-------", side:"NATO", domain:"SEA", designation:"Swedish Corvette (SWE)", type:"Corvette",
+    equipment:["Visby-class Corvette","RBS-15 Mk3 SSM","ASC 890 Support"],
+    mission:"Baltic Sentry / CUI Protection", status:"Operational",
+    coordinates:{lat:57.7,lng:18.3}, echelon:"FSG" },
+  { id:"nn04", sidc:"SFSPCLCC-------", side:"NATO", domain:"SEA", designation:"SNMCMG1 (PL-led MCM)", type:"Mine Countermeasures",
+    equipment:["ORP K. Czernicki","Remus AUV","Seafox ROV"],
+    mission:"Baltic Sentry / MCM Ops - Subsea Infrastructure", status:"Operational",
+    coordinates:{lat:55.2,lng:17.5}, echelon:"MCM" },
+
+  // ─── OPFOR LAND ──────────────────────────────────────────────
+  { id:"o01", sidc:"SHGPUCA----H---", side:"OPFOR", domain:"LAND", designation:"6th Combined Arms Army (LMD)", type:"Armored",
+    equipment:["T-90M MBT","BMP-3","2S35 Koalitsiya-SV"],
+    mission:"Offensive Ops / Northern Vector → Narva - SPB", status:"Operational",
+    coordinates:{lat:59.93,lng:30.32}, echelon:"ARMY" },
+  { id:"o02", sidc:"SHGPUCIZ---H---", side:"OPFOR", domain:"LAND", designation:"11th Army Corps (Kaliningrad)", type:"Mechanized",
+    equipment:["T-72B3M MBT","BTR-82A","Iskander-M SRBM","S-400"],
+    mission:"A2/AD Bastion / Suwalki West Pincer - Kaliningrad", status:"Operational",
+    coordinates:{lat:54.71,lng:20.51}, echelon:"CORPS" },
+  { id:"o03", sidc:"SHGPUCI----H---", side:"OPFOR", domain:"LAND", designation:"120th Guards Naval Infantry Div", type:"Naval Infantry",
+    equipment:["BMP-3F","BTR-82A","MT-LB"],
+    mission:"Amphibious Operations / Coastal Defense - Baltiysk", status:"Operational",
+    coordinates:{lat:54.65,lng:19.92}, echelon:"DIV" },
+  { id:"o04", sidc:"SHGPUCA----H---", side:"OPFOR", domain:"LAND", designation:"1st Guards Tank Army (LMD)", type:"Armored",
+    equipment:["T-80BVM MBT","T-14 Armata","BMP-T Terminator"],
+    mission:"High-Intensity Operations / Strategic Reserve", status:"Operational",
+    coordinates:{lat:56.3,lng:30.5}, echelon:"ARMY" },
+  { id:"o05", sidc:"SHGPUCF----H---", side:"OPFOR", domain:"LAND", designation:"Iskander-M / Bastion-P Bde (Kalin.)", type:"Missiles",
+    equipment:["Iskander-M SRBM","Bastion-P ASCM","S-400 Triumf SAM"],
+    mission:"A2/AD Bubble Kaliningrad / Deep Strike", status:"Operational",
+    coordinates:{lat:54.85,lng:20.25}, echelon:"BDE" },
+  { id:"o06", sidc:"SHGPUCIZ---F---", side:"OPFOR", domain:"LAND", designation:"6th Guards Mech Bde (BLR - Grodno)", type:"Mechanized",
+    equipment:["T-72B MBT","BMP-2","2S1 Gvozdika SPH"],
+    mission:"Suwalki East Pincer / LOC Interdiction - Grodno", status:"Operational",
+    coordinates:{lat:53.68,lng:23.83}, echelon:"BDE" },
+  { id:"o07", sidc:"SHGPUCIZ---E---", side:"OPFOR", domain:"LAND", designation:"11th Guards Mech Bde (BLR)", type:"Mechanized",
+    equipment:["T-72B3 MBT","BTR-80","Polonez MLRS"],
+    mission:"Support / Operational Reserve - Brest", status:"Operational",
+    coordinates:{lat:52.1,lng:23.7}, echelon:"BDE" },
+  { id:"oe01", sidc:"SHGPUEWM-------", side:"OPFOR", domain:"LAND", designation:"EW / SIGINT Bde (Kaliningrad)", type:"Electronic Warfare",
+    equipment:["Murmansk-BN EW","Krasukha-4 EW","R-330Zh Zhitel GPS Jammer"],
+    mission:"PNT Degradation / Offensive EW - Kaliningrad", status:"Operational",
+    coordinates:{lat:54.75,lng:20.8}, echelon:"BDE" },
+
+  // ─── OPFOR AIR ───────────────────────────────────────────────
+  { id:"oa01", sidc:"SHAPMFF--------", side:"OPFOR", domain:"AIR", designation:"132nd Mixed Aviation Div (Baltic Fleet)", type:"Tactical Aviation",
+    equipment:["Su-30SM Flanker-H","Su-24M Fencer-D","Su-35S Flanker-E"],
+    mission:"Air Superiority / Interdiction - Chernyakhovsk", status:"Operational",
+    coordinates:{lat:54.6,lng:21.81}, echelon:"DIV" },
+  { id:"oa02", sidc:"SHAPMFF--------", side:"OPFOR", domain:"AIR", designation:"VKS Fighter Regt (LMD)", type:"Fighter",
+    equipment:["Su-35S Flanker-E","MiG-31BM Foxhound"],
+    mission:"CAP / Interception - SPB Region", status:"Operational",
+    coordinates:{lat:59.8,lng:30.25}, echelon:"REGT" },
+
+  // ─── OPFOR NAVAL ─────────────────────────────────────────────
+  { id:"on01", sidc:"SHSPCLCC-------", side:"OPFOR", domain:"SEA", designation:"Corvette Div (Pr.20380 Steregushchiy)", type:"Corvette",
+    equipment:["Steregushchiy","Soobrazitelny","Boiky","Stoiky"],
+    mission:"Sea Denial / ASW Baltic - Baltiysk", status:"Operational",
+    coordinates:{lat:54.63,lng:19.85}, echelon:"DIV" },
+  { id:"on02", sidc:"SHSPCLFF-------", side:"OPFOR", domain:"SEA", designation:"FFG Yaroslav Mudry (Pr.11540)", type:"Frigate",
+    equipment:["Neustrashimy-class FFG","Kh-35 Uran SSM"],
+    mission:"Escort / Zone Defense - Baltic Sea", status:"Operational",
+    coordinates:{lat:54.7,lng:19.5}, echelon:"FFG" },
+  { id:"on03", sidc:"SHSPCLCC-------", side:"OPFOR", domain:"SEA", designation:"Buyan-M Corvettes (Kalibr)", type:"Missile Corvette",
+    equipment:["Buyan-M class","Kalibr-NK LACM (3M-14)","Oniks ASCM"],
+    mission:"Precision Strike / Land-Attack - Baltiysk", status:"Operational",
+    coordinates:{lat:54.58,lng:19.7}, echelon:"DIV" },
+  { id:"ou01", sidc:"SHUPSL---------", side:"OPFOR", domain:"SUB", designation:"SSK Velikiye Luki (Pr.677 Lada)", type:"Submarine",
+    equipment:["Pr.677 Lada-class SSK","533mm Torpedoes","Kalibr-PL SLCM"],
+    mission:"ISR / Sea Denial / Subsurface Interdiction", status:"Operational",
+    coordinates:{lat:55.5,lng:19.0}, echelon:"SSK" },
+  { id:"ou02", sidc:"SHUPSL---------", side:"OPFOR", domain:"SUB", designation:"SSK B-806 Dmitrov (Pr.877 Kilo)", type:"Submarine",
+    equipment:["Pr.877 Kilo-class SSK","TEST-71 Torpedoes","Mines"],
+    mission:"Mining / Submarine Patrol - Baltic", status:"Operational",
+    coordinates:{lat:55.8,lng:18.5}, echelon:"SSK" }
+];
+
+// A2/AD bastions
+window.A2AD_ZONES = [
+  { name:"Kaliningrad Bastion", center:[54.71,20.51], radiusKm:150, color:"#d8504a" },
+  { name:"Saint Petersburg / Western MD", center:[59.93,30.32], radiusKm:200, color:"#d8504a" }
+];
+
+// Phase 2 movement vectors
+window.PHASE2_VECTORS = [
+  { id:"o01", to:[59.38,28.19], axis:"SPB → Narva", domain:"LAND", duration:6000 },
+  { id:"o02", to:[54.20,22.50], axis:"Kaliningrad → Suwalki (W)", domain:"LAND", duration:6000 },
+  { id:"o04", to:[55.50,27.50], axis:"Pskov → Daugavpils", domain:"LAND", duration:6000 },
+  { id:"o06", to:[54.05,23.10], axis:"Grodno → Suwalki (E)", domain:"LAND", duration:6000 },
+  { id:"o03", to:[54.80,19.60], axis:"Amphibious / coastal", domain:"LAND", duration:6000 },
+  { id:"on01", to:[55.50,19.30], axis:"Sortie / SLOC interdiction", domain:"SEA", duration:7000 },
+  { id:"ou01", to:[56.00,19.50], axis:"Subsurface patrol", domain:"SUB", duration:7000 },
+  { id:"oa01", to:[55.20,21.00], axis:"CAS / interdiction orbit", domain:"AIR", duration:4000 }
+];
+
+// Phase 3 occupation polygons / interdiction
+window.PHASE3_POLYGONS = {
+  suwalki: [
+    [54.85,20.40],[54.60,21.50],[54.20,22.80],[54.00,23.50],
+    [53.70,23.90],[53.50,22.00],[53.60,20.80]
+  ],
+  narva: [
+    [59.95,30.30],[59.50,28.00],[59.20,27.50],[58.90,27.80],
+    [59.00,29.50],[59.50,30.00]
+  ],
+  navalInterdict: [
+    [56.50,18.00],[56.80,20.50],[55.00,20.50],[54.50,19.50],[55.00,18.00]
+  ],
+  locCut: [[54.70,20.50],[54.10,23.50]]
+};
+
+// Critical undersea infrastructure (Baltic Sentry context)
+window.CUI_NODES = [
+  { name:"Estlink 2 (FIN↔EST)", coords:[59.45,25.10], kind:"Power" },
+  { name:"BalticConnector", coords:[59.60,24.40], kind:"Gas" },
+  { name:"Nord Balt Cable", coords:[55.60,18.90], kind:"Power" },
+  { name:"NordStream Remnant", coords:[55.50,15.90], kind:"Sensor" }
+];
+
+// Phase narrative scripts (terminal log sequences)
+window.PHASE_LOGS = {
+  1: [
+    [800,  "ELINT", "Murmansk-BN & Krasukha-4 EW active. Severe GPS interference across Baltic.", "warn"],
+    [2000, "C4ISR", "Massive DDoS on critical infrastructure: Estonian power grid, Latvian ports.", "warn"],
+    [3500, "ISTAR", "MASKIROVKA: Anomalous logistic movements in Kaliningrad and Grodno.", "info"],
+    [5000, "ELINT", "X-band radar emissions increasing. S-400 & Bastion-P on high alert.", "warn"],
+    [6500, "C4ISR", "Active disinformation campaigns on Baltic social media. STRATCOM alert.", "info"],
+    [8000, "SACEUR","SSK Velikiye Luki detected submerged near Baltic subsea cables.", "warn"]
+  ],
+  2: [
+    [1500, "ISTAR", "Multiple attack vectors confirmed. OPFOR initiating high-intensity operations.", "alert"],
+    [3000, "C4ISR", "Ground pincer on Suwalki Corridor: 11th AC (W) + 6th Gds Mech BLR (E).", "alert"],
+    [4500, "SACEUR","6th CAA advancing toward Narva. eFP BG Estonia in contact.", "alert"],
+    [5500, "ISTAR", "120th Naval Infantry Div executing amphibious operations along Baltic coast.", "warn"],
+    [7000, "C4ISR", "Buyan-M launching Kalibr-NK salvo against Allied C2 infrastructure.", "alert"],
+    [8500, "SACEUR","Formal Article 5 invocation requested. SHAPE at REDCON-1.", "alert"]
+  ],
+  3: [
+    [1000, "ISTAR", "Suwalki Corridor closed. Land LOCs severed between Poland and Lithuania.", "alert"],
+    [2500, "C4ISR", "Baltic republics logistically isolated. eFP BGs in independent defense.", "alert"],
+    [4000, "SACEUR","Baltic Fleet establishes naval interdiction zone. Baltic SLOCs compromised.", "alert"],
+    [5500, "ISTAR", "NE Estonia (Narva-Tallinn axis) under partial OPFOR control. Urban combat ongoing.", "alert"],
+    [7000, "SACEUR","SHAPE orders counteroffensive. 18th Iron Div (PL) + US 2ABCT advancing north.", "info"],
+    [8500, "C4ISR", "SNMG1 and Swedish Navy attempting to break naval interdiction. BALTOPS activated.", "info"]
+  ]
+};
+
+window.PHASE_VECTORS_RAW = {
+  phase2_ground: { "o01": [59.38, 28.19], "o02": [54.2, 22.5], "o04": [55.5, 27.5], "o06": [54.05, 23.1], "o03": [54.8, 19.6] },
+  phase2_naval: { "on01": [55.5, 19.3], "ou01": [56, 19.5] },
+  phase2_air: { "oa01": [55.2, 21] }
+};
+
+</script>
+<script type="text/babel" data-presets="react">
+/* global React, ReactDOM, L, ms */
+const { useState, useEffect, useRef, useMemo, useCallback } = React;
+
+const getDomainFromSIDC = (sidc) => {
+  if (!sidc || sidc.length < 3) return 'LAND';
+  const char = sidc.charAt(2).toUpperCase();
+  if (char === 'A') return 'AIR';
+  if (char === 'G') return 'LAND';
+  if (char === 'S') return 'SEA';
+  if (char === 'U') return 'SUB';
+  return 'LAND';
+};
+
+
+// ───────────────────────────────────────────────────────────────
+// Time / utility helpers
+// ───────────────────────────────────────────────────────────────
+const fmtZulu = (d=new Date()) => {
+  const p = n => String(n).padStart(2,"0");
+  return `${p(d.getUTCHours())}${p(d.getUTCMinutes())}${p(d.getUTCSeconds())}Z`;
+};
+const fmtCoord = ({lat,lng}) => {
+  const NS = lat>=0?"N":"S", EW = lng>=0?"E":"W";
+  const f = (x)=>Math.abs(x).toFixed(3);
+  return `${f(lat)}°${NS}  ${f(lng)}°${EW}`;
+};
+const sideColor = (side) => side==="NATO" ? "var(--allied)" : "var(--hostile)";
+
+// ───────────────────────────────────────────────────────────────
+// Tweakable defaults (persisted by host via __edit_mode_set_keys)
+// ───────────────────────────────────────────────────────────────
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "basemap": "carto-voyager",
+  "showCUI": true,
+  "showA2AD": true,
+  "panelDensity": "comfortable",
+  "symbolSize": 30,
+  "accentTone": "arctic"
+}/*EDITMODE-END*/;
+
+const BASEMAPS = {
+  "carto-voyager": { url:"https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png", attr:"© OSM © CARTO" },
+  "carto-dark":    { url:"https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", attr:"© OSM © CARTO" },
+  "carto-positron":{ url:"https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", attr:"© OSM © CARTO" }
+};
+
+const ACCENT_TONES = {
+  "arctic":    { allied:"#5b8def", hostile:"#e85d50", mint:"#7cd8a8" },
+  "amber":     { allied:"#f0b441", hostile:"#e85d50", mint:"#7cd8a8" },
+  "monochrome":{ allied:"#cfd6e2", hostile:"#e85d50", mint:"#7cd8a8" }
+};
+
+// ───────────────────────────────────────────────────────────────
+// Phase definitions
+// ───────────────────────────────────────────────────────────────
+const PHASES = [
+  { id:0, code:"D-5",  name:"POSTURE",       blurb:"Steady-state Baltic Sentry. eFP forces in tactical defense; SNMG1 patrolling SLOCs." },
+  { id:1, code:"D-3",  name:"SHAPING",       blurb:"Hybrid / EW / cyber preparation. A2/AD bastions energise; submarine ISR near subsea cables." },
+  { id:2, code:"D-DAY",name:"OFFENSIVE",     blurb:"Multi-axis theater offensive. Suwalki pincer, Narva drive, amphibious & naval sortie." },
+  { id:3, code:"D+1",  name:"CONSOLIDATION", blurb:"Occupation polygons set; Baltic LOCs severed; SACEUR orders counteroffensive." }
+];
+
+// ───────────────────────────────────────────────────────────────
+// Map helpers
+// ───────────────────────────────────────────────────────────────
+function buildSidcIcon(unit, size) {
+  try {
+    const sym = new ms.Symbol(unit.sidc, {
+      size: size,
+      strokeWidth: 4,
+      fillOpacity: 1,
+      infoColor: "white"
+    });
+    const anchor = sym.getAnchor();
+    return L.divIcon({
+      className: `unit-marker-app6 side-${unit.side}`,
+      html: `<div style="width:${sym.width}px; height:${sym.height}px;">${sym.asSVG()}</div>`,
+      iconSize: [sym.width, sym.height],
+      iconAnchor: [anchor.x, anchor.y]
+    });
+  } catch(e) {
+    return L.divIcon({className:"unit-marker-app6", html:"<div style='width:24px;height:24px;background:#888'></div>"});
+  }
+}
+
+// ───────────────────────────────────────────────────────────────
+// MAIN APP
+// ───────────────────────────────────────────────────────────────
+function App() {
+  const [tweaks, setTweaks] = useState(TWEAK_DEFAULTS);
+
+  const setTweak = (k, v) => {
+    setTweaks(t => {
+      const next = typeof k === "object" ? { ...t, ...k } : { ...t, [k]: v };
+      window.parent?.postMessage({type:"__edit_mode_set_keys", edits: typeof k==="object"?k:{[k]:v}}, "*");
+      return next;
+    });
+  };
+
+  // Apply accent CSS vars
+  useEffect(() => {
+    const tone = ACCENT_TONES[tweaks.accentTone] || ACCENT_TONES.arctic;
+    const root = document.documentElement;
+    root.style.setProperty("--allied",  tone.allied);
+    root.style.setProperty("--hostile", tone.hostile);
+    root.style.setProperty("--mint",    tone.mint);
+    root.dataset.density = tweaks.panelDensity;
+  }, [tweaks.accentTone, tweaks.panelDensity]);
+
+  // ── State
+  const [units, setUnits] = useState(()=>JSON.parse(JSON.stringify(window.INITIAL_OOB)));
+  const [activePhase, setActivePhase] = useState(0);
+  const [logEntries, setLogEntries] = useState([
+    {ts: fmtZulu(), prefix:"SYS", msg:"NAVINT Baltic Sentry initialised. COP D-5 posture established.", tone:"info"},
+    {ts: fmtZulu(), prefix:"C4ISR", msg:"All eFP BGs report green. SNMG1 station-keeping vic Bornholm.", tone:"info"}
+  ]);
+  const [dossier, setDossier] = useState([]);   // pinned intel cards
+  const [selectedId, setSelectedId] = useState(null);
+  const [filter, setFilter] = useState({ NATO:true, OPFOR:true, LAND:true, AIR:true, SEA:true, SUB:true });
+  const [now, setNow] = useState(new Date());
+  const [showConfig, setShowConfig] = useState(false);
+
+  useEffect(() => {
+    const t = setInterval(()=>setNow(new Date()), 1000);
+    return ()=>clearInterval(t);
+  }, []);
+
+  // Map refs
+  const mapRef = useRef(null);
+  const mapEl = useRef(null);
+  const tileRef = useRef(null);
+  const markersRef = useRef({});      // unitId → marker
+  const dynamicLayerRef = useRef([]); // phase overlays
+  const animFramesRef = useRef([]);
+
+  // ── Initialise Leaflet map
+  useEffect(() => {
+    if (mapRef.current) return;
+    const map = L.map(mapEl.current, {
+      center:[58.0,22.0], zoom:5, minZoom:4, maxZoom:9,
+      zoomControl:false, attributionControl:false
+    });
+    L.control.zoom({position:"bottomright"}).addTo(map);
+    L.control.attribution({position:"bottomleft", prefix:false}).addTo(map);
+    mapRef.current = map;
+  }, []);
+
+  // ── Basemap swap
+  useEffect(() => {
+    const map = mapRef.current; if (!map) return;
+    if (tileRef.current) map.removeLayer(tileRef.current);
+    const bm = BASEMAPS[tweaks.basemap] || BASEMAPS["carto-voyager"];
+    tileRef.current = L.tileLayer(bm.url, { attribution: bm.attr, subdomains:"abcd", maxZoom:19 }).addTo(map);
+  }, [tweaks.basemap]);
+
+  // ── Render unit markers
+  useEffect(() => {
+    const map = mapRef.current; if (!map) return;
+
+    // Clear stale
+    Object.values(markersRef.current).forEach(m => map.removeLayer(m));
+    markersRef.current = {};
+
+    units.forEach(u => {
+      if (!filter[u.side] || !filter[u.domain]) return;
+      const marker = L.marker([u.coordinates.lat, u.coordinates.lng], {
+        icon: buildSidcIcon(u, tweaks.symbolSize),
+        zIndexOffset: u.side==="OPFOR" ? 100 : 200
+      }).addTo(map);
+
+      marker.on("click", (ev) => {
+        L.DomEvent.stopPropagation(ev);
+        pinDossier(u);
+      });
+      markersRef.current[u.id] = marker;
+    });
+  }, [units, filter, tweaks.symbolSize]);
+
+  // ── Helpers ────────────────────────────────────────────────
+  const pushLog = useCallback((prefix, msg, tone="info") => {
+    setLogEntries(l => [...l, {ts: fmtZulu(), prefix, msg, tone}]);
+  }, []);
+
+  const pinDossier = useCallback((u) => {
+    setSelectedId(u.id);
+    setDossier(d => d.find(x=>x.id===u.id) ? d : [u, ...d]);
+  }, []);
+
+  const dismissDossier = (id) => setDossier(d => d.filter(u=>u.id!==id));
+  const purgeDossier = () => setDossier([]);
+
+  // ── Reset operation
+  const resetOp = useCallback(() => {
+    animFramesRef.current.forEach(id => cancelAnimationFrame(id));
+    animFramesRef.current = [];
+    dynamicLayerRef.current.forEach(l => mapRef.current?.removeLayer(l));
+    dynamicLayerRef.current = [];
+    setUnits(JSON.parse(JSON.stringify(window.INITIAL_OOB)));
+    setActivePhase(0);
+    setDossier([]);
+    setSelectedId(null);
+    setLogEntries([
+      {ts: fmtZulu(), prefix:"SYS", msg:"Operation RESET. Returning to D-5 posture.", tone:"warn"},
+    ]);
+  }, []);
+
+  // ── Animate marker movement
+  const animateUnit = useCallback((unitId, target, duration) => {
+    const marker = markersRef.current[unitId]; if (!marker) return;
+    const start = marker.getLatLng();
+    const dLat = target[0] - start.lat;
+    const dLng = target[1] - start.lng;
+    let t0 = null;
+    const step = (ts) => {
+      if (!t0) t0 = ts;
+      const pct = Math.min((ts - t0)/duration, 1);
+      const ease = 1 - Math.pow(1-pct, 2.4);
+      marker.setLatLng([start.lat + dLat*ease, start.lng + dLng*ease]);
+      if (pct < 1) animFramesRef.current.push(requestAnimationFrame(step));
+      else {
+        setUnits(us => us.map(u => u.id===unitId
+          ? {...u, coordinates:{lat:start.lat+dLat,lng:start.lng+dLng}} : u));
+      }
+    };
+    animFramesRef.current.push(requestAnimationFrame(step));
+  }, []);
+
+  // ── Trigger phase
+  const triggerPhase = useCallback((p) => {
+    if (p <= activePhase) {
+      pushLog("SYS", `Phase ${p} already executed. Reset to re-run.`, "warn");
+      return;
+    }
+    if (p !== activePhase + 1) {
+      pushLog("SYS", `Phase ${p} blocked. Phases must execute sequentially.`, "warn");
+      return;
+    }
+    setActivePhase(p);
+    const map = mapRef.current;
+
+    if (p === 1 && tweaks.showA2AD) {
+      window.A2AD_ZONES.forEach(z => {
+        const c = L.circle(z.center, {
+          radius: z.radiusKm*1000, color: z.color, weight:1.5,
+          fillColor: z.color, fillOpacity:0.10, dashArray:"4,6", className:"a2ad-circle"
+        }).addTo(map);
+        dynamicLayerRef.current.push(c);
+        const inner = L.circle(z.center, {
+          radius: z.radiusKm*1000*0.55, color: z.color, weight:1,
+          fillColor: z.color, fillOpacity:0.18, className:"a2ad-circle-inner"
+        }).addTo(map);
+        dynamicLayerRef.current.push(inner);
+      });
+    }
+
+    if (p === 2) {
+      window.PHASE2_VECTORS.forEach(v => {
+        const u = units.find(x=>x.id===v.id); if (!u) return;
+        const color = v.domain==="AIR" ? "#f59e0b" : v.domain==="SEA"||v.domain==="SUB" ? "#7aa6e8" : "#e85d50";
+        const line = L.polyline([[u.coordinates.lat,u.coordinates.lng], v.to], {
+          color, weight:2, dashArray:"6,8", opacity:0.9
+        }).addTo(map);
+        dynamicLayerRef.current.push(line);
+        // arrowhead
+        const head = L.circleMarker(v.to, {radius:4, color, fillColor:color, fillOpacity:1, weight:1}).addTo(map);
+        dynamicLayerRef.current.push(head);
+        animateUnit(v.id, v.to, v.duration);
+      });
+    }
+
+    if (p === 3) {
+      const polys = window.PHASE3_POLYGONS;
+      const occA = L.polygon(polys.suwalki, {color:"#e85d50", weight:1.5, fillColor:"#e85d50", fillOpacity:0.18}).addTo(map);
+      const occB = L.polygon(polys.narva,   {color:"#e85d50", weight:1.5, fillColor:"#e85d50", fillOpacity:0.18}).addTo(map);
+      const navInt = L.polygon(polys.navalInterdict, {color:"#e85d50", weight:1, dashArray:"4,6", fillColor:"#e85d50", fillOpacity:0.10}).addTo(map);
+      const cut = L.polyline(polys.locCut, {color:"#e85d50", weight:5, dashArray:"2,8", opacity:0.95}).addTo(map);
+      [occA,occB,navInt,cut].forEach(l => dynamicLayerRef.current.push(l));
+    }
+
+    // Stream log entries
+    (window.PHASE_LOGS[p] || []).forEach(([dly, prefix, msg, tone]) => {
+      setTimeout(()=>pushLog(prefix, msg, tone), dly);
+    });
+  }, [activePhase, pushLog, units, animateUnit, tweaks.showA2AD]);
+
+  // ── CUI markers
+  useEffect(() => {
+    const map = mapRef.current; if (!map) return;
+    const layers = [];
+    if (tweaks.showCUI) {
+      window.CUI_NODES.forEach(n => {
+        const m = L.circleMarker(n.coords, {
+          radius:5, color:"#7cd8a8", fillColor:"#7cd8a8", fillOpacity:0.7, weight:2
+        }).bindTooltip(`<b>${n.name}</b><br/>${n.kind} • CUI`, {direction:"top",offset:[0,-6]}).addTo(map);
+        layers.push(m);
+      });
+    }
+    return () => layers.forEach(l => map.removeLayer(l));
+  }, [tweaks.showCUI]);
+
+  // ── Force tally
+  const tally = useMemo(() => {
+    const t = { NATO:{LAND:0,AIR:0,SEA:0,SUB:0}, OPFOR:{LAND:0,AIR:0,SEA:0,SUB:0} };
+    units.forEach(u => { t[u.side][u.domain] = (t[u.side][u.domain]||0)+1; });
+    return t;
+  }, [units]);
+
+  const onImportConfig = useCallback((data) => {
+    // 1. Reset operational state
+    animFramesRef.current.forEach(id => cancelAnimationFrame(id));
+    animFramesRef.current = [];
+    dynamicLayerRef.current.forEach(l => mapRef.current?.removeLayer(l));
+    dynamicLayerRef.current = [];
+    setActivePhase(0);
+    setDossier([]);
+    setSelectedId(null);
+
+    // 2. Parse units
+    let importedUnits = [];
+    if (Array.isArray(data.oob)) importedUnits = data.oob;
+    else if (Array.isArray(data.units)) importedUnits = data.units;
+    else if (Array.isArray(data)) importedUnits = data;
+    else { window.alert("Invalid JSON structure."); return; }
+
+    const finalUnits = importedUnits.map(u => ({
+      ...u,
+      domain: u.domain || getDomainFromSIDC(u.sidc),
+      echelon: u.echelon || ""
+    }));
+
+    setUnits(finalUnits);
+
+    // 3. Map settings
+    if (data.mapSettings) {
+      if (data.mapSettings.centerLat && data.mapSettings.centerLng) {
+        mapRef.current?.setView([data.mapSettings.centerLat, data.mapSettings.centerLng], data.mapSettings.zoom || 5);
+      }
+      if (data.mapSettings.basemap) setTweak("basemap", data.mapSettings.basemap);
+    }
+
+    // 4. Phase vectors
+    if (data.phaseVectors) window.PHASE_VECTORS_RAW = data.phaseVectors;
+
+    pushLog("IMPORT", `Configuration loaded: ${finalUnits.length} units.`, "info");
+  }, [setTweak, pushLog]);
+
+  const onExportConfig = useCallback(() => {
+    const map = mapRef.current;
+    const center = map ? map.getCenter() : {lat:58, lng:24};
+    const zoom = map ? map.getZoom() : 5;
+
+    const config = {
+      version: "COP2026_v2.0",
+      exportDate: new Date().toISOString(),
+      mapSettings: {
+        centerLat: center.lat,
+        centerLng: center.lng,
+        zoom: zoom,
+        basemap: tweaks.basemap
+      },
+      oob: units,
+      phaseVectors: window.PHASE_VECTORS_RAW || {}
+    };
+
+    const blob = new Blob([JSON.stringify(config, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `EasternFlank_COP_Config_${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    pushLog("EXPORT", `Configuration exported (${units.length} units).`, "info");
+  }, [units, tweaks.basemap, pushLog]);
+
+  const threatLevel = activePhase===0?"GREEN":activePhase===1?"YELLOW":activePhase===2?"ORANGE":"RED";
+
+  // ──────────────────────────────────────────────────────────
+  // RENDER
+  // ──────────────────────────────────────────────────────────
+  return (
+    <div className="app">
+      {/* Classification banner */}
+      <div className="classif">
+        <span>UNCLASSIFIED // FOR OFFICIAL USE ONLY — TRAINING / WARGAME SCENARIO</span>
+        <span className="classif-mid">NAVINT BALTIC SENTRY · MOD-2 EASTERN FLANK · TRL-7</span>
+        <span>STANAG 4774/4778 · TEMPEST READY · AIR-GAPPED</span>
+      </div>
+
+      {/* Top bar */}
+      <header className="topbar">
+        <div className="brand">
+          <img className="nato-logo"
+            src="https://www.nato.int/content/experience-fragments/nato/site/header/english/master/_jcr_content/root/c06_main_header_copy/logo.coreimg.png/1771861319290/nato.png"
+            alt="NATO" />
+          <div className="brand-text">
+            <div className="brand-line1">NATO EASTERN FLANK <span className="muted">·</span> COP 2026</div>
+            <div className="brand-line2">NAVINT BALTIC SENTRY · CJTF-BAL · SHAPE / SACEUR · MULTIDOMAIN COP</div>
+          </div>
+        </div>
+
+        <div className="topbar-meta">
+          <div className="meta-block">
+            <div className="meta-label">DTG ZULU</div>
+            <div className="meta-val mono">{fmtZulu(now)} · {now.toISOString().slice(0,10).replace(/-/g,"")}</div>
+          </div>
+          <div className={`meta-block threat threat-${threatLevel.toLowerCase()}`}>
+            <div className="meta-label">THREAT</div>
+            <div className="meta-val mono">{threatLevel}</div>
+          </div>
+          <div className="meta-block">
+            <div className="meta-label">PHASE</div>
+            <div className="meta-val mono">{PHASES[activePhase].code} · {PHASES[activePhase].name}</div>
+          </div>
+        </div>
+
+        <div className="topbar-actions">
+          <button className="btn-ghost" onClick={()=>setShowConfig(true)}>⚙ CONFIG</button>
+          <button className="btn-danger" onClick={resetOp}>↺ RESET OP</button>
+        </div>
+      </header>
+
+      <div className="workbench">
+        {/* LEFT RAIL */}
+        <aside className="rail">
+          <section className="rail-sec">
+            <div className="sec-head"><span className="sec-n">01</span> PHASE LADDER</div>
+            <ol className="phase-ladder">
+              {PHASES.map(ph => {
+                const state = ph.id < activePhase ? "done" : ph.id === activePhase ? "active" : "pending";
+                return (
+                  <li key={ph.id} className={`phase-step state-${state}`}
+                      onClick={()=>ph.id>0 && ph.id<=activePhase+1 && triggerPhase(ph.id)}>
+                    <div className="phase-rail-dot"></div>
+                    <div className="phase-rail-line"></div>
+                    <div className="phase-content">
+                      <div className="phase-head">
+                        <span className="phase-code mono">{ph.code}</span>
+                        <span className="phase-name">{ph.name}</span>
+                        <span className={`phase-status state-${state}`}>{state.toUpperCase()}</span>
+                      </div>
+                      <p className="phase-blurb">{ph.blurb}</p>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </section>
+
+          <section className="rail-sec">
+            <div className="sec-head"><span className="sec-n">02</span> FORCE TALLY</div>
+            <div className="tally">
+              {["NATO","OPFOR"].map(side => (
+                <div key={side} className={`tally-row side-${side}`}>
+                  <div className="tally-side">{side==="NATO"?"ALLIED":"HOSTILE"}</div>
+                  <div className="tally-bars">
+                    {["LAND","AIR","SEA","SUB"].map(d => (
+                      <div key={d} className="tally-cell" title={`${d}: ${tally[side][d]}`}>
+                        <div className="tally-d">{d}</div>
+                        <div className="tally-v mono">{String(tally[side][d]).padStart(2,"0")}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section className="rail-sec">
+            <div className="sec-head"><span className="sec-n">03</span> LAYERS · FILTERS</div>
+            <div className="filters">
+              {["NATO","OPFOR"].map(s => (
+                <label key={s} className={`chip side-${s} ${filter[s]?"on":""}`}>
+                  <input type="checkbox" checked={filter[s]} onChange={()=>setFilter(f=>({...f,[s]:!f[s]}))}/>
+                  {s==="NATO"?"ALLIED":"HOSTILE"}
+                </label>
+              ))}
+            </div>
+            <div className="filters">
+              {["LAND","AIR","SEA","SUB"].map(d => (
+                <label key={d} className={`chip ${filter[d]?"on":""}`}>
+                  <input type="checkbox" checked={filter[d]} onChange={()=>setFilter(f=>({...f,[d]:!f[d]}))}/>
+                  {d}
+                </label>
+              ))}
+            </div>
+            <div className="layer-toggles">
+              <label><input type="checkbox" checked={tweaks.showA2AD} onChange={e=>setTweak("showA2AD",e.target.checked)}/> A2/AD bastions</label>
+              <label><input type="checkbox" checked={tweaks.showCUI} onChange={e=>setTweak("showCUI",e.target.checked)}/> CUI nodes (subsea)</label>
+            </div>
+          </section>
+        </aside>
+
+        {/* MAP */}
+        <main className="stage">
+          <div ref={mapEl} className="map"></div>
+          <MapHud activePhase={activePhase} units={units} dossierLen={dossier.length}/>
+          <PhaseGate activePhase={activePhase} onTrigger={triggerPhase}/>
+        </main>
+
+        {/* RIGHT DOSSIER */}
+        <aside className="dossier">
+          <div className="dossier-head">
+            <div>
+              <div className="dh-title">INTEL DOSSIER</div>
+              <div className="dh-sub mono">{dossier.length.toString().padStart(2,"0")} CARDS PINNED</div>
+            </div>
+            <button className="btn-ghost-sm" disabled={!dossier.length} onClick={purgeDossier}>PURGE</button>
+          </div>
+          <div className="dossier-body">
+            {dossier.length === 0 && (
+              <div className="dossier-empty">
+                <div className="empty-glyph">◇</div>
+                <div className="empty-title">No intel pinned</div>
+                <div className="empty-hint">Click any unit on the COP to extract its dossier card.</div>
+              </div>
+            )}
+            {dossier.map(u => (
+              <DossierCard key={u.id} unit={u}
+                onDismiss={()=>dismissDossier(u.id)}
+                isSelected={selectedId===u.id}/>
+            ))}
+          </div>
+        </aside>
+
+        {/* COMMAND LOG */}
+        <CommandLog entries={logEntries}/>
+      </div>
+
+      {/* CONFIG MODAL */}
+      {showConfig && (
+        <ConfigModal
+          tweaks={tweaks} setTweak={setTweak}
+          onClose={()=>setShowConfig(false)}
+          units={units}
+          setUnits={setUnits}
+          onImportConfig={onImportConfig}
+          pushLog={(msg, tone="info", prefix="OOB")=>setLogEntries(l=>[...l,{ts:fmtZulu(),prefix,msg,tone}])}
+        />
+      )}
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────
+// MAP HUD overlays (compass + scale-ish + counter)
+// ───────────────────────────────────────────────────────────────
+function MapHud({ activePhase, units, dossierLen }) {
+  return (
+    <>
+      <div className="hud hud-tl">
+        <div className="hud-pill">
+          <span className="hud-k">AOR</span>
+          <span className="hud-v mono">BALTIC THEATER · 53–60°N · 17–31°E</span>
+        </div>
+        <div className="hud-pill">
+          <span className="hud-k">FUSION</span>
+          <span className="hud-v mono">AIS · RADAR · ELINT · OSINT</span>
+        </div>
+      </div>
+      <div className="hud hud-tr">
+        <div className="hud-pill mono">UNITS {String(units.length).padStart(2,"0")}</div>
+        <div className="hud-pill mono">DOSSIER {String(dossierLen).padStart(2,"0")}</div>
+      </div>
+      <div className="hud hud-bl">
+        <div className="grid-key">
+          <span><i className="dot allied"></i> ALLIED</span>
+          <span><i className="dot hostile"></i> HOSTILE</span>
+          <span><i className="dot mint"></i> CUI</span>
+          <span><i className="dash hostile-dash"></i> A2/AD</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────
+// Phase trigger (floating bottom-center)
+// ───────────────────────────────────────────────────────────────
+function PhaseGate({ activePhase, onTrigger }) {
+  const next = PHASES[activePhase + 1];
+  return (
+    <div className="phase-gate">
+      <div className="gate-card">
+        <div className="gate-label">CURRENT</div>
+        <div className="gate-now mono">{PHASES[activePhase].code} · {PHASES[activePhase].name}</div>
+      </div>
+      {next ? (
+        <button className="gate-btn" onClick={()=>onTrigger(next.id)}>
+          <span className="gate-cta mono">EXECUTE → {next.code}</span>
+          <span className="gate-name">{next.name}</span>
+        </button>
+      ) : (
+        <div className="gate-card">
+          <div className="gate-label">TERMINAL</div>
+          <div className="gate-now mono">PHASE 3 ENGAGED</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────
+// Dossier card
+// ───────────────────────────────────────────────────────────────
+function DossierCard({ unit, onDismiss, isSelected }) {
+  const symRef = useRef(null);
+  useEffect(() => {
+    if (!symRef.current) return;
+    try {
+      const sym = new ms.Symbol(unit.sidc, {size:36, strokeWidth:4, fillOpacity:1, infoColor:"white"});
+      symRef.current.innerHTML = sym.asSVG();
+    } catch(e) {}
+  }, [unit.sidc]);
+  return (
+    <article className={`d-card side-${unit.side} ${isSelected?"selected":""}`}>
+      <header className="d-card-head">
+        <div className="d-symbol" ref={symRef}></div>
+        <div className="d-id">
+          <div className="d-desig">{unit.designation}</div>
+          <div className="d-meta mono">{unit.id.toUpperCase()} · {unit.sidc} · {unit.echelon}</div>
+        </div>
+        <button className="d-x" onClick={onDismiss}>×</button>
+      </header>
+      <div className="d-row">
+        <div className="d-k">DOMAIN</div>
+        <div className="d-v">{unit.domain} · {unit.type}</div>
+      </div>
+      <div className="d-row">
+        <div className="d-k">STATUS</div>
+        <div className={`d-v status-${unit.status.toLowerCase()}`}>● {unit.status}</div>
+      </div>
+      <div className="d-row">
+        <div className="d-k">POSIT</div>
+        <div className="d-v mono">{fmtCoord(unit.coordinates)}</div>
+      </div>
+      <div className="d-row d-stack">
+        <div className="d-k">EQUIPMENT</div>
+        <ul className="d-eq">
+          {unit.equipment.map((e,i)=><li key={i}>{e}</li>)}
+        </ul>
+      </div>
+      <div className="d-row d-stack">
+        <div className="d-k">MISSION</div>
+        <div className="d-mission">{unit.mission}</div>
+      </div>
+    </article>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────
+// Command log (bottom)
+// ───────────────────────────────────────────────────────────────
+function CommandLog({ entries }) {
+  const ref = useRef(null);
+  useEffect(()=>{ if (ref.current) ref.current.scrollTop = ref.current.scrollHeight; }, [entries]);
+  return (
+    <footer className="cmdlog">
+      <div className="cmdlog-bar">
+        <span className="cmdlog-title">COMMAND TERMINAL</span>
+        <span className="cmdlog-meta mono">C4ISR · ISTAR · ELINT · SACEUR · SYS</span>
+      </div>
+      <div ref={ref} className="cmdlog-stream mono">
+        {entries.map((e,i) => (
+          <div key={i} className={`logline tone-${e.tone}`}>
+            <span className="lts">[{e.ts}]</span>
+            <span className={`lpfx pfx-${e.prefix}`}>[{e.prefix}]</span>
+            <span className="lmsg">{e.msg}</span>
+          </div>
+        ))}
+      </div>
+    </footer>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────
+// Config modal
+// ───────────────────────────────────────────────────────────────
+function ConfigModal({ tweaks, setTweak, onClose, units, setUnits, onImportConfig, pushLog }) {
+  const [tab, setTab] = useState("oob");          // oob | form | io | settings
+  const [editId, setEditId] = useState(null);     // null = creating new
+  const [filter, setFilter] = useState("");
+  const blank = {
+    id:"", side:"NATO", domain:"LAND", designation:"",
+    sidc:"SFGPUCA----E---", type:"Armored",
+    coordinates:{lat:55.0,lng:24.0}, status:"Operational",
+    equipment:"", mission:"", readiness:"R1"
+  };
+  const [form, setForm] = useState(blank);
+  const importRef = useRef(null);
+
+  const beginCreate = () => { setEditId(null); setForm(blank); setTab("form"); };
+  const beginEdit = (u) => {
+    setEditId(u.id);
+    setForm({
+      ...blank, ...u,
+      coordinates: u.coordinates || {lat:55,lng:24},
+      equipment: Array.isArray(u.equipment) ? u.equipment.join(", ") : (u.equipment||"")
+    });
+    setTab("form");
+  };
+  const deleteUnit = (u) => {
+    if (!window.confirm(`Delete ${u.id} — ${u.designation}?`)) return;
+    setUnits(arr => arr.filter(x => x.id !== u.id));
+    pushLog(`Unit ${u.id} (${u.designation}) deleted from OOB.`, "warn");
+  };
+  const saveUnit = () => {
+    if (!form.id.trim() || !form.designation.trim()) {
+      window.alert("ID and Designation are required."); return;
+    }
+    const payload = {
+      ...form,
+      equipment: typeof form.equipment === "string"
+        ? form.equipment.split(",").map(s=>s.trim()).filter(Boolean)
+        : form.equipment,
+      coordinates: {
+        lat: parseFloat(form.coordinates.lat),
+        lng: parseFloat(form.coordinates.lng)
+      }
+    };
+    setUnits(arr => {
+      const exists = arr.some(u => u.id === payload.id);
+      if (editId && editId !== payload.id) {
+        // id changed during edit → remove old, add new
+        return [...arr.filter(u => u.id !== editId), payload];
+      }
+      return exists
+        ? arr.map(u => u.id === payload.id ? payload : u)
+        : [...arr, payload];
+    });
+    pushLog(`Unit ${payload.id} (${payload.designation}) ${editId?"updated":"created"}.`, "info");
+    setTab("oob");
+    setEditId(null);
+    setForm(blank);
+  };
+
+  const exportJSON = () => {
+    const blob = new Blob([JSON.stringify({
+      version: "COP2026_v2.0",
+      exportDate: new Date().toISOString(),
+      mapSettings: {
+        centerLat: 58,
+        centerLng: 24,
+        zoom: 5,
+        basemap: tweaks.basemap
+      },
+      oob: units,
+      phaseVectors: window.PHASE_VECTORS_RAW || {}
+    }, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `EasternFlank_COP_Config_${new Date().toISOString().slice(0,10)}.json`;
+    a.click(); URL.revokeObjectURL(url);
+    pushLog(`Configuration exported (${units.length} units).`, "info", "EXPORT");
+  };
+  const importJSON = (e) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      try {
+        const data = JSON.parse(ev.target.result);
+        onImportConfig(data);
+      } catch (err) { window.alert("Parse error: "+err.message); }
+    };
+    r.readAsText(file);
+  };
+
+  // SIDC preview
+  const sidcPreview = useMemo(() => {
+    try {
+      const sym = new ms.Symbol(form.sidc, { size: 38, strokeWidth: 4, fillOpacity: 1 });
+      return sym.asSVG();
+    } catch { return null; }
+  }, [form.sidc]);
+
+  const filtered = useMemo(() => {
+    if (!filter.trim()) return units;
+    const q = filter.toLowerCase();
+    return units.filter(u =>
+      u.id.toLowerCase().includes(q) ||
+      u.designation.toLowerCase().includes(q) ||
+      (u.type||"").toLowerCase().includes(q) ||
+      u.side.toLowerCase().includes(q)
+    );
+  }, [units, filter]);
+
+  return (
+    <div className="modal-bg" onClick={onClose}>
+      <div className="modal modal-wide" onClick={e=>e.stopPropagation()}>
+        <header className="modal-head">
+          <div>
+            <div className="modal-title">OOB MANAGER &nbsp;·&nbsp; CONFIGURATION</div>
+            <div className="modal-sub mono">MIL-STD-2525B / APP-6 · NAVINT-OOB/1.0 · STANAG 4774</div>
+          </div>
+          <button className="modal-x" onClick={onClose}>×</button>
+        </header>
+
+        {/* Tabs */}
+        <div className="cfg-tabs">
+          {[["oob","OOB TABLE"],["form", editId?"EDIT UNIT":"CREATE UNIT"],["io","IMPORT / EXPORT"],["settings","SETTINGS"]].map(([k,label])=>(
+            <button key={k} className={`cfg-tab ${tab===k?"on":""}`} onClick={()=>setTab(k)}>{label}</button>
+          ))}
+        </div>
+
+        <div className="modal-body">
+          {/* ── TAB: OOB TABLE (R + D) ─────────────────────────── */}
+          {tab==="oob" && (
+            <section className="cfg-sec">
+              <div className="oob-toolbar">
+                <input className="oob-search" placeholder="filter id / designation / type / side"
+                  value={filter} onChange={e=>setFilter(e.target.value)} />
+                <span className="oob-count mono">{filtered.length}/{units.length} UNITS</span>
+                <button className="btn-create" onClick={beginCreate}>+ CREATE UNIT</button>
+              </div>
+              <div className="crud-wrap">
+                <table className="crud-table">
+                  <thead>
+                    <tr>
+                      <th>SYM</th><th>ID</th><th>SIDE</th><th>DOM</th><th>DESIGNATION</th>
+                      <th>TYPE</th><th>SIDC</th><th>LAT</th><th>LNG</th><th>STATUS</th><th>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map(u => (
+                      <CrudRow key={u.id} unit={u} onEdit={()=>beginEdit(u)} onDel={()=>deleteUnit(u)} />
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+
+          {/* ── TAB: CREATE/EDIT FORM ──────────────────────────── */}
+          {tab==="form" && (
+            <section className="cfg-sec">
+              <div className="form-bar">
+                <h4>{editId ? `EDIT · ${editId}` : "CREATE NEW UNIT"}</h4>
+                <div className="sidc-prev">
+                  <span className="muted mono">SIDC PREVIEW</span>
+                  {sidcPreview
+                    ? <span dangerouslySetInnerHTML={{__html: sidcPreview}}/>
+                    : <span className="muted mono">— invalid —</span>}
+                </div>
+              </div>
+
+              <div className="form-grid">
+                <Field label="Unit ID" required>
+                  <input value={form.id} onChange={e=>setForm({...form,id:e.target.value})} placeholder="e.g. n07"/>
+                </Field>
+                <Field label="Side">
+                  <select value={form.side} onChange={e=>setForm({...form,side:e.target.value})}>
+                    <option>NATO</option><option>OPFOR</option>
+                  </select>
+                </Field>
+                <Field label="Domain">
+                  <select value={form.domain} onChange={e=>setForm({...form,domain:e.target.value})}>
+                    <option>LAND</option><option>AIR</option><option>SEA</option><option>SUB</option>
+                  </select>
+                </Field>
+                <Field label="Status">
+                  <select value={form.status} onChange={e=>setForm({...form,status:e.target.value})}>
+                    <option>Operational</option><option>Engaging</option>
+                    <option>Disrupted</option><option>Destroyed</option>
+                  </select>
+                </Field>
+                <Field label="Designation" required full>
+                  <input value={form.designation} onChange={e=>setForm({...form,designation:e.target.value})}
+                    placeholder="e.g. 3rd Armored Bde (US)"/>
+                </Field>
+                <Field label="SIDC (15-char MIL-STD-2525B)" full>
+                  <input value={form.sidc} maxLength={15}
+                    onChange={e=>setForm({...form,sidc:e.target.value.toUpperCase()})}
+                    placeholder="SFGPUCA----E---" className="mono"/>
+                </Field>
+                <Field label="Type">
+                  <input value={form.type} onChange={e=>setForm({...form,type:e.target.value})}/>
+                </Field>
+                <Field label="Readiness">
+                  <select value={form.readiness} onChange={e=>setForm({...form,readiness:e.target.value})}>
+                    <option>R1</option><option>R2</option><option>R3</option><option>R4</option>
+                  </select>
+                </Field>
+                <Field label="Latitude">
+                  <input type="number" step="0.001" value={form.coordinates.lat}
+                    onChange={e=>setForm({...form,coordinates:{...form.coordinates,lat:e.target.value}})}/>
+                </Field>
+                <Field label="Longitude">
+                  <input type="number" step="0.001" value={form.coordinates.lng}
+                    onChange={e=>setForm({...form,coordinates:{...form.coordinates,lng:e.target.value}})}/>
+                </Field>
+                <Field label="Equipment (comma-separated)" full>
+                  <input value={form.equipment}
+                    onChange={e=>setForm({...form,equipment:e.target.value})}
+                    placeholder="Leopard 2A8 MBT, Puma IFV, PzH 2000"/>
+                </Field>
+                <Field label="Mission" full>
+                  <textarea rows={2} value={form.mission}
+                    onChange={e=>setForm({...form,mission:e.target.value})}
+                    placeholder="Tactical Defense / Forward Deterrence"/>
+                </Field>
+              </div>
+
+              <div className="form-actions">
+                <button className="btn-create" onClick={saveUnit}>{editId?"SAVE CHANGES":"CREATE UNIT"}</button>
+                <button className="btn-ghost" onClick={()=>{setTab("oob");setEditId(null);}}>CANCEL</button>
+              </div>
+            </section>
+          )}
+
+          {/* ── TAB: IMPORT / EXPORT JSON ──────────────────────── */}
+          {tab==="io" && (
+            <section className="cfg-sec">
+              <div className="io-card">
+                <h4>EXPORT CONFIGURATION</h4>
+                <p className="io-blurb">Download the complete OOB and platform settings as a NAVINT-OOB/1.0 JSON file. Includes all {units.length} units, coordinates, SIDC codes, equipment, and current tweaks state.</p>
+                <button className="btn-create" onClick={exportJSON}>⬇ EXPORT JSON</button>
+              </div>
+              <div className="io-card">
+                <h4>IMPORT CONFIGURATION</h4>
+                <p className="io-blurb">Load a previously exported JSON file. Replaces the current OOB. Accepts both {`{ units: [...] }`} schema and legacy unit-array files.</p>
+                <input ref={importRef} type="file" accept=".json" onChange={importJSON} className="io-file"/>
+              </div>
+              <div className="io-card">
+                <h4>RESET TO BASELINE OOB</h4>
+                <p className="io-blurb">Restore the factory NAVINT Baltic Sentry order-of-battle. Clears all CRUD edits.</p>
+                <button className="btn-danger" onClick={()=>{
+                  if (window.confirm("Restore baseline OOB? Current edits will be lost.")) {
+                    setUnits(JSON.parse(JSON.stringify(window.INITIAL_OOB)));
+                    pushLog("OOB restored to baseline.", "warn", "OOB");
+                  }
+                }}>↺ RESTORE BASELINE</button>
+              </div>
+            </section>
+          )}
+
+          {/* ── TAB: SETTINGS ──────────────────────────────────── */}
+          {tab==="settings" && (
+            <>
+              <section className="cfg-sec">
+                <h4>BASEMAP</h4>
+                <div className="seg">
+                  {Object.keys(BASEMAPS).map(k => (
+                    <button key={k} className={`seg-b ${tweaks.basemap===k?"on":""}`}
+                      onClick={()=>setTweak("basemap",k)}>{k.replace("carto-","")}</button>
+                  ))}
+                </div>
+              </section>
+              <section className="cfg-sec">
+                <h4>ACCENT TONE</h4>
+                <div className="seg">
+                  {Object.keys(ACCENT_TONES).map(k => (
+                    <button key={k} className={`seg-b ${tweaks.accentTone===k?"on":""}`}
+                      onClick={()=>setTweak("accentTone",k)}>{k}</button>
+                  ))}
+                </div>
+              </section>
+              <section className="cfg-sec">
+                <h4>PANEL DENSITY</h4>
+                <div className="seg">
+                  {["compact","comfortable","spacious"].map(k => (
+                    <button key={k} className={`seg-b ${tweaks.panelDensity===k?"on":""}`}
+                      onClick={()=>setTweak("panelDensity",k)}>{k}</button>
+                  ))}
+                </div>
+              </section>
+              <section className="cfg-sec">
+                <h4>SYMBOL SIZE · {tweaks.symbolSize}px</h4>
+                <input type="range" min={20} max={48} step={2} value={tweaks.symbolSize}
+                  onChange={e=>setTweak("symbolSize", parseInt(e.target.value))}/>
+              </section>
+              <section className="cfg-sec">
+                <h4>COMPLIANCE & STANDARDS</h4>
+                <div className="badges">
+                  {["STANAG 4774","STANAG 4778","TEMPEST SDIP-27","AJP-3","MIL-STD-2525B","APP-6","CycloneDX 1.7","Pydantic v2","Zod","FastAPI","SQLite"].map(b=>(
+                    <span key={b} className="badge mono">{b}</span>
+                  ))}
+                </div>
+              </section>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// SIDC mini-symbol cell for the CRUD table
+function CrudRow({ unit, onEdit, onDel }) {
+  const cellRef = useRef(null);
+  useEffect(() => {
+    if (!cellRef.current) return;
+    cellRef.current.innerHTML = "";
+    try {
+      const sym = new ms.Symbol(unit.sidc, { size: 22, strokeWidth: 4, fillOpacity: 1, infoColor: "white" });
+      cellRef.current.innerHTML = sym.asSVG();
+    } catch {}
+  }, [unit.sidc]);
+  return (
+    <tr className={`side-${unit.side}`}>
+      <td><div ref={cellRef} className="crud-sym"/></td>
+      <td className="mono">{unit.id}</td>
+      <td><span className={`pill side-${unit.side}`}>{unit.side}</span></td>
+      <td className="mono">{unit.domain}</td>
+      <td className="crud-desig">{unit.designation}</td>
+      <td>{unit.type}</td>
+      <td className="mono crud-sidc">{unit.sidc}</td>
+      <td className="mono">{Number(unit.coordinates?.lat).toFixed(2)}</td>
+      <td className="mono">{Number(unit.coordinates?.lng).toFixed(2)}</td>
+      <td><span className={`status-pill st-${(unit.status||"operational").toLowerCase()}`}>{unit.status||"—"}</span></td>
+      <td>
+        <button className="btn-edit btn-sm" onClick={onEdit}>EDIT</button>
+        <button className="btn-del btn-sm" onClick={onDel}>DEL</button>
+      </td>
+    </tr>
+  );
+}
+
+function Field({ label, required, full, children }) {
+  return (
+    <label className={`fld ${full?"fld-full":""}`}>
+      <span className="fld-label">{label}{required && <span className="req">*</span>}</span>
+      {children}
+    </label>
+  );
+}
+
+// ───────────────────────────────────────────────────────────────
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+
+</script>
+</body>
+</html>

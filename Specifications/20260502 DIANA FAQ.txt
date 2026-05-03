@@ -1,0 +1,326 @@
+# About NATO DIANA
+https://proposals.diana.tech/servlet/hype/IMT?userAction=BrowseCurrentUser&rkId=367cd8a0234fd6734f00bab6e7c97eca&templateName=MenuItem
+
+
+Question
+What is DIANA?
+Answer
+DIANA is the Defence Innovation Accelerator for the North Atlantic, a NATO organisation with a mission to find and accelerate dual-use innovation. Through an Alliance-wide network of innovators, accelerators, test centres and end-users, DIANA is solving critical defence, security and resilience challenges to support a more peaceful future.
+Category
+About NATO DIANA
+
+Question
+What is DIANA’s mission and vision?
+Answer
+DIANA envisions a secure and peaceful future where technology is integral to the governance, protection, prosperity and resilience of people around the world. Through a thriving innovation ecosystem that effectively integrates academia, industry, governments and not-for-profits, DIANA accelerates technology solutions across the full spectrum of conflict risk drivers, whether climate change, energy resilience, food insecurity, or warfare.
+
+With 32 nations working together to create a collaborative, science-based and resilient technology pipeline, the world’s most successful Alliance can lead the way on innovation for peace and prosperity.
+
+Category
+About NATO DIANA
+
+
+# About the proposal submission process
+Question
+Authenticator app: I'm having issues receiving the one-time login code. Can you help?
+Answer
+Please note that you will need an authenticator app to log in, for multifactor authentication. We recommend the Microsoft or Google authenticator app.
+
+When logging in for the first time, you will be shown a QR code to scan to add your portal account to the authenticator app.
+
+On this login, and future logins, you will be asked for a one-time code during login - this is referring to the verification code that is shown in your authenticator app for your portal account. This changes every 30 seconds.
+
+If you experience issues with the multi-factor authentication process and/or have lost your credentials then you may seek assistance by sending an email to portal@diana.nato.int
+
+Category
+About the proposal submission process
+
+Question
+Can I resubmit my proposal?
+Answer
+Yes, you may resubmit your proposal up until the date that the submission window closes.
+
+You may do this by selecting the 'My Company’ tab at the top, followed by ‘Proposals Overview' in the left side menu and selecting the submitted proposal.
+
+ You may then select 'Edit Proposal' and make your changes.
+
+Category
+About the proposal submission process
+
+Question
+Can I save and return to my proposal before submitting?
+Answer
+Yes, you have the option to save and return to your proposal submission by clicking on ‘Save as draft’. 
+Category
+About the proposal submission process
+
+Question
+Do I have to anonymise the proposal? Is the proposal blind?
+Answer
+No, you do not have to anonymise the proposal. You may include the company name and other identifying information.
+
+Category
+About the proposal submission process
+
+Question
+Do I require security clearance to submit a proposal?
+Answer
+No, you do not require security clearance to submit a proposal. 
+Category
+About the proposal submission process
+
+Question
+How can I add a colleague to my company for collaboration?
+Answer
+Firstly, the colleague should register as a user on the DIANA challenge portal, entering "Yes" to the question "Has a member of your company already joined the DIANA Challenges portal and created a company profile?"
+
+Once they have registered, you may add their user to your company by selecting the "My Company" tab, then select 'Contacts' in the left menu, then select "Create new invitation".
+
+Enter their registered email address, add a comment if you wish, and select "Send".
+
+When next logging into the portal, your colleague will see an invitation to join your company which, if they select, will allow them to submit proposals to the DIANA Challenges from your company, or collaborate on existing proposals, with one proposal permitted per company per challenge.
+
+If you are unable to view the 'Contacts button' in the left menu, it may be outside your visible screen. Please use the horizonal scroll bar to view it.
+
+Category
+About the proposal submission process
+
+Question
+How does the competitive selection process work?
+Answer
+Following an initial eligibility assessment, the competitive selection process proceeds in three steps.
+
+Step 1 of the submission process involves evaluation of the ‘Short Form Proposal’.
+
+Proposals that pass Step 1 will proceed to Step 2, which involves evaluation of the ‘Long Form Proposal’.
+
+Proposals that pass Step 2 will proceed to Step 3, which takes the format of a virtual panel session, where innovators deliver their proposal through a presentation, followed by questions from the evaluation panel. Innovators that reach step 3 will receive guidance on how to prepare and participate.
+
+Category
+About the proposal submission process
+
+Question
+Is a proposal involving two sibling companies; two commonly owned companies; two companies with separate ownership; a consortium of companies; etc., permitted?
+Answer
+ 
+DIANA requires that there is one applicant comprised of one legal entity for purposes of submitting a proposal and the contractual relationship with DIANA if selected. However, it is common for applicants to rely on shared services among related companies (e.g. two companies under a common parent), and even in some cases for applicants to rely on IP or support from one or more third parties in the role of supplier, subcontractor, consortium participant, joint venture, or partnership. This is permitted and should be explained in the proposal to the extent relevant to the solution being proposed. Terms and conditions regarding eligibility including presence and incorporation in NATO, and the source of technology relied on for the proposal, would also extend to other companies participating alongside the applicant.
+
+Category
+About the proposal submission process
+
+Question
+What does 'Permission denied' mean when I try and log in?
+Answer
+'Permission denied' will show on your log in page if you enter the wrong user name and password.
+
+Please select 'Forgot password' to reset the password.
+
+ 
+
+Category
+About the proposal submission process
+
+Question
+Which Technology Readiness Level ("TRL") should I provide in my proposal?
+Answer
+You should enter the current TRL (at the point of submission) of the technical solution you are proposing and would continue to iterate during the programme if selected.
+ 
+We note the TRL of technical solutions may differ depending on the use case and/or operational environment. The TRL you enter must reflect the use case and/or operational environment you are proposing in your submission.
+
+Category
+About the proposal submission process
+
+Question
+Which technology readiness level (TRL) should I select for my proposal?
+Answer
+DIANA uses the following definitions for technology readiness levels (TRL):
+
+TRL 1: Basic principles observed
+TRL 2: Technology concept formulated
+TRL 3: Experimental proof of concept
+TRL 4: Technology validated in lab
+TRL 5: Technology validated in relevant environment
+TRL 6: Prototype demonstrated in relevant environment
+TRL 7: Prototype demonstration in operational environment
+TRL 8: Integrated system complete and operationally qualified
+TRL 9: Integrated system is operational
+
+These are based on the MIT Dual-Use Readiness Levels. 
+
+We are unable to advise on specific cases regarding which TRL to use. Our recommendation is to consider the operational environment your proposal relates to.
+
+Category
+About the proposal submission process
+
+Question
+Who can I contact for support during the submission process?
+Answer
+Please note DIANA cannot provide individual guidance or answer questions relating to the content of your proposal or the evaluation process. 
+
+If you experience any technical issues with the Challenge Portal and require support during submission, please submit a Help Ticket.   
+
+ Steps for submitting a Help Ticket: 
+
+Once you have clicked 'FAQS' on the navigation bar at the top of the DIANA Challenge Portal, please click the 'Create Ticket' blue button at the bottom of the page. We highly recommend reviewing all the FAQs before creating a ticket.
+
+Please note, you must to be logged in to be able to create a Help Ticket.
+
+Category
+About the proposal submission process
+
+Question
+Why am I unable to submit a proposal?
+Answer
+There are a few common factors that result in inability to submit a proposal:
+
+You do not have a user account.
+Please refer to DIANA Challenges - FAQ Entry: ‪Is a new user account and/or company profile required for innovators who applied to the DIANA Challenge Programme in prior years?‬
+You are having difficulty logging in.
+Please refer to DIANA Challenges - FAQ Entry: ‪Why am I unable to log in?‬ 
+You are not associated with a company.
+Please refer to DIANA Challenges - FAQ Entry: ‪How can I add a colleague to my company for collaboration?‬ and;
+DIANA Challenges - FAQ Entry: ‪Is a new user account and/or company profile required for innovators who applied to the DIANA Challenge Programme in prior years?‬
+You have not found the submit button.
+Please refer to DIANA Challenges - FAQ Entry: ‪How can I submit a proposal?‬ 
+You have found the submit button but nothing happens when you click it.
+Please note that it is likely you have pop-ups blocked on the browser. Please ensure that your browser is set to allow pop-ups for the portal website. 
+You have not completed all the mandatory fields in your user account, company profile and/or proposal form. 
+Category
+About the proposal submission process
+
+
+# About Decision Superioroty for NATO Warfighters Challenge
+Question
+Do I need a new account?
+Answer
+Please note that all applicants must register on the portal, even if they have created an account for previous DIANA challenge calls.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+Question
+Do I need to submit both the Short-Form Proposal and Long-Form Proposal at the same time? What about the video?
+Answer
+Yes, both the Short-Form Proposal and the Long-Form Proposal must be completed and submitted together before the close of the submission window at 0900 BST on Tuesday 5th May 2026. If you wish to submit a supplementary video, this also must be submitted by the same deadline.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+Question
+How can I submit a proposal? 
+Answer
+When the Challenge Call launches, you will be able to submit a proposal through the Challenge Portal, by clicking on ‘Challenges’ in the top menu, where you will be able to select the 'Decision Superiority for NATO Warfighters' challenge and begin the application process.
+
+The submission window will close on 5th May 2026 at 09:00 BST. 
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+
+Question
+How will the 100k EUR contractual funding be used?
+Answer
+The 100k EUR contractual funding must be used to enable the demonstration of your technical solution within a cloud environment, facilitated by DIANA. This will include contracting a cloud service provider to facilitate the demonstration.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+Question
+What challenges will DIANA be launching in 2026?
+Answer
+DIANA has just launched the Decision Superiority for NATO Warfighters challenge.
+
+DIANA will launch further challenges in June that will address a wider range of NATO's capability needs in defence and security.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+Question
+What happens after the demonstration to Allied Command Operations and NATO stakeholders?
+Answer
+Innovators selected through this challenge are eligible to be awarded follow-on contracts by DIANA through its Rapid Adoption Service, on behalf of Allied Command Operations, NATO and Allies, for prototyping and potentially full deployment without further competition, at the discretion of the relevant entities.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+Question
+What level of technical maturity is required to be eligible for the challenge?
+Answer
+This challenge is seeking solutions of Technology Readiness Level (TRL) 7 or higher. You will need to provide evidence that your technical solution is TRL7+ in your proposal.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+Question
+Who can submit a proposal? 
+Answer
+Any company with its principal place of business in a NATO member nation that is controlled and majority owned by nationals of NATO member nations is eligible to submit a proposal. The specific eligibility criteria are set out in the ‘Terms and Conditions of Bidding’.
+
+DIANA’s challenges are targeted at start-ups or small and medium-sized enterprises with limited experience in defence and security.
+
+DIANA will accept collaborative proposals as long as all member companies meet the eligibility requirements; a single company must be listed as the lead for the purposes of communication during the selection process, as well as for contracting and reporting requirements, should the proposal be selected.
+
+Universities, public sector organisations and non-profit groups are not eligible to apply.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+Question
+Will I be expected to attend an accelerator site?
+Answer
+No, selected innovators will not attend an accelerator site as part of this Challenge Programme. Instead, the programme will involve intensive workshops with Allied Command Operations and NATO stakeholders, focusing on iteration and integration of the technical solution within a cloud-based environment, culminating in a demonstration of that solution to NATO stakeholders.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+Question
+Will I be expected to work with third parties?
+Answer
+Yes, you will be expected to work closely with other vendors and NATO partners; integration will be key. DIANA will arrange a demonstration environment, but you will need to engage with relevant third parties including cloud service/platform providers. This will involve entering into contractual relationships to facilitate the demonstration of your technical solution to NATO stakeholders. 
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+Question
+Will my data and intellectual property be protected?
+Answer
+DIANA innovators retain all rights to their intellectual property. DIANA will neither take nor assert any rights over innovators’ intellectual property as part of the Challenge Programme, nor will any other stakeholders involved with the Challenge Programme. 
+
+DIANA is committed to protecting innovator information and to fostering a trusted environment for innovators’ proprietary/confidential information and their intellectual property. All information submitted as part of a proposal is treated as strictly confidential and will only be accessible to the evaluators assigned to that proposal, all of whom are subject to strict confidentiality obligations.
+
+Proposals are submitted via a secure portal, where each company receives a unique identifier and directions to create a unique login account. All information is encrypted in submission and in storage.
+
+When in the programme innovators will receive guidance and mentoring and may also seek specialist support from DIANA’s Legal Connect network to provide additional levels of assurance on protection of data and intellectual property.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+Question
+Will my data and intellectual property be protected?
+Answer
+DIANA innovators retain all rights to their intellectual property. DIANA will neither take nor assert any rights over innovators’ intellectual property as part of the Challenge Programme, nor will any other stakeholders involved with the Challenge Programme. 
+
+DIANA is committed to protecting innovator information and to fostering a trusted environment for innovators’ proprietary/confidential information and their intellectual property. All information submitted as part of a proposal is treated as strictly confidential and will only be accessible to the evaluators assigned to that proposal, all of whom are subject to strict confidentiality obligations.
+
+Proposals are submitted via a secure portal, where each company receives a unique identifier and directions to create a unique login account. All information is encrypted in submission and in storage.
+
+When in the programme innovators will receive guidance and mentoring and may also seek specialist support from DIANA’s Legal Connect network to provide additional levels of assurance on protection of data and intellectual property.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+
+
+Question
+Will there be a Phase 2 to this challenge?
+Answer
+No, unlike previous DIANA challenges, there will not be a 'Phase 2' to this programme. The programme will conclude with demonstrations of the integrated solutions to NATO Allied Command Operations and other NATO stakeholders.
+
+Category
+About Decision Superiority for NATO Warfighters Challenge
+

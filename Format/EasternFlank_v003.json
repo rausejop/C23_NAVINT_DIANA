@@ -1,0 +1,609 @@
+{
+  "version": "COP2026_v2.0",
+  "exportDate": "2026-05-02T16:31:10.409Z",
+  "mapSettings": {
+    "centerLat": 58,
+    "centerLng": 24,
+    "zoom": 5,
+    "basemap": "carto-voyager"
+  },
+  "oob": [
+    {
+      "id": "n01",
+      "sidc": "SFGPUCA----E---",
+      "side": "NATO",
+      "domain": "LAND",
+      "designation": "eFP BG Estonia (UK-led)",
+      "type": "Armored",
+      "equipment": [
+        "Challenger 3 MBT",
+        "CV90 IFV",
+        "AS90 SPH"
+      ],
+      "mission": "Tactical Defense / Forward Deterrence - Tapa",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 59.26,
+        "lng": 25.97
+      },
+      "echelon": "BG"
+    },
+    {
+      "id": "n02",
+      "sidc": "SFGPUCIZ---E---",
+      "side": "NATO",
+      "domain": "LAND",
+      "designation": "eFP BG Latvia (CA-led)",
+      "type": "Mechanized",
+      "equipment": [
+        "Leopard 2A6 MBT",
+        "LAV 6.0",
+        "Spike ATGM"
+      ],
+      "mission": "Tactical Defense / MN Bde Latvia - Ādaži",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 57.08,
+        "lng": 24.35
+      },
+      "echelon": "BG"
+    },
+    {
+      "id": "n03",
+      "sidc": "SFGPUCA----F---",
+      "side": "NATO",
+      "domain": "LAND",
+      "designation": "45. Panzer Bde 'Litauen' (DE)",
+      "type": "Armored",
+      "equipment": [
+        "Leopard 2A8 MBT",
+        "Puma IFV",
+        "PzH 2000"
+      ],
+      "mission": "Permanent Forward Presence Lithuania - Rukla",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 55.08,
+        "lng": 24.19
+      },
+      "echelon": "BDE"
+    },
+    {
+      "id": "n04",
+      "sidc": "SFGPUCA----G---",
+      "side": "NATO",
+      "domain": "LAND",
+      "designation": "16th Pomeranian Mech Div (PL)",
+      "type": "Armored",
+      "equipment": [
+        "M1A2 SEPv3 Abrams",
+        "K2 Black Panther",
+        "K9 Thunder SPH"
+      ],
+      "mission": "Suwalki Corridor Defense / Masuria - Olsztyn",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 53.78,
+        "lng": 20.48
+      },
+      "echelon": "DIV"
+    },
+    {
+      "id": "n05",
+      "sidc": "SFGPUCA----G---",
+      "side": "NATO",
+      "domain": "LAND",
+      "designation": "18th Mech Div 'Iron' (PL)",
+      "type": "Armored",
+      "equipment": [
+        "M1A1 FEP Abrams",
+        "Rosomak APC",
+        "Homar-K MLRS"
+      ],
+      "mission": "Strategic Reserve / Eastern Shield - Siedlce",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 52.17,
+        "lng": 22.27
+      },
+      "echelon": "DIV"
+    },
+    {
+      "id": "n06",
+      "sidc": "SFGPUCIZ---E---",
+      "side": "NATO",
+      "domain": "LAND",
+      "designation": "US Rotational BCT (2ABCT/1AD)",
+      "type": "Mechanized",
+      "equipment": [
+        "M1A2 SEPv3",
+        "M2A4 Bradley",
+        "M109A7 Paladin",
+        "HIMARS"
+      ],
+      "mission": "SWORD 26 / Saber Strike - Pabradė LTU",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.98,
+        "lng": 25.78
+      },
+      "echelon": "BCT"
+    },
+    {
+      "id": "na01",
+      "sidc": "SFAPMFF--------",
+      "side": "NATO",
+      "domain": "AIR",
+      "designation": "BAP Šiauliai - French Rafale Det",
+      "type": "Fighter",
+      "equipment": [
+        "4x Dassault Rafale C/B"
+      ],
+      "mission": "Baltic Air Policing QRA - Šiauliai AB, LTU",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 55.89,
+        "lng": 23.39
+      },
+      "echelon": "DET"
+    },
+    {
+      "id": "na02",
+      "sidc": "SFAPMFF--------",
+      "side": "NATO",
+      "domain": "AIR",
+      "designation": "BAP Ämari - Portuguese F-16M Det",
+      "type": "Fighter",
+      "equipment": [
+        "4x F-16AM/BM MLU"
+      ],
+      "mission": "Baltic Air Policing QRA - Ämari AB, EST",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 59.26,
+        "lng": 24.21
+      },
+      "echelon": "DET"
+    },
+    {
+      "id": "na03",
+      "sidc": "SFAPMFQ--------",
+      "side": "NATO",
+      "domain": "AIR",
+      "designation": "P-3C Orion / P-8A MPA Det",
+      "type": "Maritime Patrol",
+      "equipment": [
+        "P-8A Poseidon",
+        "Sonobuoys",
+        "AGM-84 Harpoon"
+      ],
+      "mission": "Baltic Sentry / ASW & ISR",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 58.2,
+        "lng": 22.5
+      },
+      "echelon": "DET"
+    },
+    {
+      "id": "nn01",
+      "sidc": "SFSPCLFF-------",
+      "side": "NATO",
+      "domain": "SEA",
+      "designation": "SNMG1 Flagship (DNK Frigate)",
+      "type": "Frigate",
+      "equipment": [
+        "Iver Huitfeldt-class FFG",
+        "SM-2 / ESSM",
+        "Harpoon SSM"
+      ],
+      "mission": "SNMG1 - Baltic Sea Patrol",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 56.5,
+        "lng": 19.8
+      },
+      "echelon": "FFG"
+    },
+    {
+      "id": "nn02",
+      "sidc": "SFSPCLFF-------",
+      "side": "NATO",
+      "domain": "SEA",
+      "designation": "ESPS Castilla (ESP LHD)",
+      "type": "Amphibious",
+      "equipment": [
+        "Castilla LHD",
+        "Embarked Marine BN",
+        "SH-60B"
+      ],
+      "mission": "STEADFAST DART 26 / ARF Maritime",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 55.6,
+        "lng": 18.5
+      },
+      "echelon": "LHD"
+    },
+    {
+      "id": "nn03",
+      "sidc": "SFSPCLFF-------",
+      "side": "NATO",
+      "domain": "SEA",
+      "designation": "Swedish Corvette (SWE)",
+      "type": "Corvette",
+      "equipment": [
+        "Visby-class Corvette",
+        "RBS-15 Mk3 SSM",
+        "ASC 890 Support"
+      ],
+      "mission": "Baltic Sentry / CUI Protection",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 57.7,
+        "lng": 18.3
+      },
+      "echelon": "FSG"
+    },
+    {
+      "id": "nn04",
+      "sidc": "SFSPCLCC-------",
+      "side": "NATO",
+      "domain": "SEA",
+      "designation": "SNMCMG1 (PL-led MCM)",
+      "type": "Mine Countermeasures",
+      "equipment": [
+        "ORP K. Czernicki",
+        "Remus AUV",
+        "Seafox ROV"
+      ],
+      "mission": "Baltic Sentry / MCM Ops - Subsea Infrastructure",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 55.2,
+        "lng": 17.5
+      },
+      "echelon": "MCM"
+    },
+    {
+      "id": "o01",
+      "sidc": "SHGPUCA----H---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "6th Combined Arms Army (LMD)",
+      "type": "Armored",
+      "equipment": [
+        "T-90M MBT",
+        "BMP-3",
+        "2S35 Koalitsiya-SV"
+      ],
+      "mission": "Offensive Ops / Northern Vector → Narva - SPB",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 59.93,
+        "lng": 30.32
+      },
+      "echelon": "ARMY"
+    },
+    {
+      "id": "o02",
+      "sidc": "SHGPUCIZ---H---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "11th Army Corps (Kaliningrad)",
+      "type": "Mechanized",
+      "equipment": [
+        "T-72B3M MBT",
+        "BTR-82A",
+        "Iskander-M SRBM",
+        "S-400"
+      ],
+      "mission": "A2/AD Bastion / Suwalki West Pincer - Kaliningrad",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.71,
+        "lng": 20.51
+      },
+      "echelon": "CORPS"
+    },
+    {
+      "id": "o03",
+      "sidc": "SHGPUCI----H---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "120th Guards Naval Infantry Div",
+      "type": "Naval Infantry",
+      "equipment": [
+        "BMP-3F",
+        "BTR-82A",
+        "MT-LB"
+      ],
+      "mission": "Amphibious Operations / Coastal Defense - Baltiysk",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.65,
+        "lng": 19.92
+      },
+      "echelon": "DIV"
+    },
+    {
+      "id": "o04",
+      "sidc": "SHGPUCA----H---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "1st Guards Tank Army (LMD)",
+      "type": "Armored",
+      "equipment": [
+        "T-80BVM MBT",
+        "T-14 Armata",
+        "BMP-T Terminator"
+      ],
+      "mission": "High-Intensity Operations / Strategic Reserve",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 56.3,
+        "lng": 30.5
+      },
+      "echelon": "ARMY"
+    },
+    {
+      "id": "o05",
+      "sidc": "SHGPUCF----H---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "Iskander-M / Bastion-P Bde (Kalin.)",
+      "type": "Missiles",
+      "equipment": [
+        "Iskander-M SRBM",
+        "Bastion-P ASCM",
+        "S-400 Triumf SAM"
+      ],
+      "mission": "A2/AD Bubble Kaliningrad / Deep Strike",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.85,
+        "lng": 20.25
+      },
+      "echelon": "BDE"
+    },
+    {
+      "id": "o06",
+      "sidc": "SHGPUCIZ---F---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "6th Guards Mech Bde (BLR - Grodno)",
+      "type": "Mechanized",
+      "equipment": [
+        "T-72B MBT",
+        "BMP-2",
+        "2S1 Gvozdika SPH"
+      ],
+      "mission": "Suwalki East Pincer / LOC Interdiction - Grodno",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 53.68,
+        "lng": 23.83
+      },
+      "echelon": "BDE"
+    },
+    {
+      "id": "o07",
+      "sidc": "SHGPUCIZ---E---",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "11th Guards Mech Bde (BLR)",
+      "type": "Mechanized",
+      "equipment": [
+        "T-72B3 MBT",
+        "BTR-80",
+        "Polonez MLRS"
+      ],
+      "mission": "Support / Operational Reserve - Brest",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 52.1,
+        "lng": 23.7
+      },
+      "echelon": "BDE"
+    },
+    {
+      "id": "oe01",
+      "sidc": "SHGPUEWM-------",
+      "side": "OPFOR",
+      "domain": "LAND",
+      "designation": "EW / SIGINT Bde (Kaliningrad)",
+      "type": "Electronic Warfare",
+      "equipment": [
+        "Murmansk-BN EW",
+        "Krasukha-4 EW",
+        "R-330Zh Zhitel GPS Jammer"
+      ],
+      "mission": "PNT Degradation / Offensive EW - Kaliningrad",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.75,
+        "lng": 20.8
+      },
+      "echelon": "BDE"
+    },
+    {
+      "id": "oa01",
+      "sidc": "SHAPMFF--------",
+      "side": "OPFOR",
+      "domain": "AIR",
+      "designation": "132nd Mixed Aviation Div (Baltic Fleet)",
+      "type": "Tactical Aviation",
+      "equipment": [
+        "Su-30SM Flanker-H",
+        "Su-24M Fencer-D",
+        "Su-35S Flanker-E"
+      ],
+      "mission": "Air Superiority / Interdiction - Chernyakhovsk",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.6,
+        "lng": 21.81
+      },
+      "echelon": "DIV"
+    },
+    {
+      "id": "oa02",
+      "sidc": "SHAPMFF--------",
+      "side": "OPFOR",
+      "domain": "AIR",
+      "designation": "VKS Fighter Regt (LMD)",
+      "type": "Fighter",
+      "equipment": [
+        "Su-35S Flanker-E",
+        "MiG-31BM Foxhound"
+      ],
+      "mission": "CAP / Interception - SPB Region",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 59.8,
+        "lng": 30.25
+      },
+      "echelon": "REGT"
+    },
+    {
+      "id": "on01",
+      "sidc": "SHSPCLCC-------",
+      "side": "OPFOR",
+      "domain": "SEA",
+      "designation": "Corvette Div (Pr.20380 Steregushchiy)",
+      "type": "Corvette",
+      "equipment": [
+        "Steregushchiy",
+        "Soobrazitelny",
+        "Boiky",
+        "Stoiky"
+      ],
+      "mission": "Sea Denial / ASW Baltic - Baltiysk",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.63,
+        "lng": 19.85
+      },
+      "echelon": "DIV"
+    },
+    {
+      "id": "on02",
+      "sidc": "SHSPCLFF-------",
+      "side": "OPFOR",
+      "domain": "SEA",
+      "designation": "FFG Yaroslav Mudry (Pr.11540)",
+      "type": "Frigate",
+      "equipment": [
+        "Neustrashimy-class FFG",
+        "Kh-35 Uran SSM"
+      ],
+      "mission": "Escort / Zone Defense - Baltic Sea",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.7,
+        "lng": 19.5
+      },
+      "echelon": "FFG"
+    },
+    {
+      "id": "on03",
+      "sidc": "SHSPCLCC-------",
+      "side": "OPFOR",
+      "domain": "SEA",
+      "designation": "Buyan-M Corvettes (Kalibr)",
+      "type": "Missile Corvette",
+      "equipment": [
+        "Buyan-M class",
+        "Kalibr-NK LACM (3M-14)",
+        "Oniks ASCM"
+      ],
+      "mission": "Precision Strike / Land-Attack - Baltiysk",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 54.58,
+        "lng": 19.7
+      },
+      "echelon": "DIV"
+    },
+    {
+      "id": "ou01",
+      "sidc": "SHUPSL---------",
+      "side": "OPFOR",
+      "domain": "SUB",
+      "designation": "SSK Velikiye Luki (Pr.677 Lada)",
+      "type": "Submarine",
+      "equipment": [
+        "Pr.677 Lada-class SSK",
+        "533mm Torpedoes",
+        "Kalibr-PL SLCM"
+      ],
+      "mission": "ISR / Sea Denial / Subsurface Interdiction",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 55.5,
+        "lng": 19
+      },
+      "echelon": "SSK"
+    },
+    {
+      "id": "ou02",
+      "sidc": "SHUPSL---------",
+      "side": "OPFOR",
+      "domain": "SUB",
+      "designation": "SSK B-806 Dmitrov (Pr.877 Kilo)",
+      "type": "Submarine",
+      "equipment": [
+        "Pr.877 Kilo-class SSK",
+        "TEST-71 Torpedoes",
+        "Mines"
+      ],
+      "mission": "Mining / Submarine Patrol - Baltic",
+      "status": "Operational",
+      "coordinates": {
+        "lat": 55.8,
+        "lng": 18.5
+      },
+      "echelon": "SSK"
+    }
+  ],
+  "phaseVectors": {
+    "phase2_ground": {
+      "o01": [
+        59.38,
+        28.19
+      ],
+      "o02": [
+        54.2,
+        22.5
+      ],
+      "o04": [
+        55.5,
+        27.5
+      ],
+      "o06": [
+        54.05,
+        23.1
+      ],
+      "o03": [
+        54.8,
+        19.6
+      ]
+    },
+    "phase2_naval": {
+      "on01": [
+        55.5,
+        19.3
+      ],
+      "ou01": [
+        56,
+        19.5
+      ]
+    },
+    "phase2_air": {
+      "oa01": [
+        55.2,
+        21
+      ]
+    }
+  }
+}
