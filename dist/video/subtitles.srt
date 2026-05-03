@@ -1,0 +1,132 @@
+1
+00:00:00,000 --> 00:00:08,000
+C23 NAVINT is a doctrine-driven AI decision-superiority augmentation
+for Maven Smart System NATO and Allied C2 platforms.
+
+2
+00:00:08,000 --> 00:00:16,000
+A single self-contained HTML file that runs offline on a 16 GB
+tactical workstation, with no installation, no server, no proprietary stack.
+
+3
+00:00:16,000 --> 00:00:25,000
+Every workflow is bound to an Allied Joint Publication,
+with a citable provenance.
+
+4
+00:00:25,000 --> 00:00:34,000
+The default mission embeds the Eastern Flank illustrative scenario
+from the challenge statement.
+
+5
+00:00:34,000 --> 00:00:43,000
+NATO eFP battle groups in EE/LV/LT/PL.
+SNMG1 in the Baltic. OPFOR forces from LMD, Kaliningrad and Belarus.
+
+6
+00:00:43,000 --> 00:00:55,000
+Critical Undersea Infrastructure nodes (Estlink 2, Baltic Connector).
+Two suspect dark-AIS vessels (DARK ECHO 1 and 2) render in red.
+
+7
+00:00:55,000 --> 00:01:05,000
+The COP fuses commercial AIS, OSINT, RADAR, ELINT and FUSION events
+into a single layer-toggleable view.
+
+8
+00:01:05,000 --> 00:01:13,000
+The Force Tally shows units by side and by domain,
+including CYBER as the fifth operational domain per AJP-3.20.
+
+9
+00:01:13,000 --> 00:01:20,000
+Top-bar tiles surface FPCON, CBRN, PNT and CIS PACE in real time.
+
+10
+00:01:20,000 --> 00:01:28,000
+The Joint Targeting Cycle is fully materialised per AJP-3.9.
+Six-phase JTC indicator on the top bar.
+
+11
+00:01:28,000 --> 00:01:38,000
+The JPTL with HVT, HPT and TST categories,
+the F2T2EA stage, CDE rating and per-target restrictions.
+
+12
+00:01:38,000 --> 00:01:45,000
+Restricted Target List and No-Strike List as separate lists.
+Every engagement decision gates through these inputs.
+
+13
+00:01:45,000 --> 00:01:55,000
+Every CoA that would engage a Time-Sensitive Target opens a
+Rules-of-Engagement authorisation modal.
+
+14
+00:01:55,000 --> 00:02:05,000
+The modal surfaces matching TSTs with their CDE rating,
+the full RTL, the NSL, and an explicit Authorise-or-Deny decision.
+
+15
+00:02:05,000 --> 00:02:14,000
+Operational wargaming runs in-platform without any external simulator.
+
+16
+00:02:14,000 --> 00:02:23,000
+Every NATO CoA is matched pairwise against every OPFOR CoA
+through a deterministic seeded outcome model.
+
+17
+00:02:23,000 --> 00:02:30,000
+Colour-coded matrix; best-and-worst summary per friendly option.
+
+18
+00:02:30,000 --> 00:02:40,000
+The cascade-effects engine is doctrine-as-code.
+Each rule cites its source Allied Joint Publication.
+
+19
+00:02:40,000 --> 00:02:50,000
+AJP-3.1 for naval interdiction. AJP-4.4 for movement.
+AJP-3.20 for cyber.
+
+20
+00:02:50,000 --> 00:02:55,000
+Every analytical output is auditable back to the doctrinal text.
+
+21
+00:02:55,000 --> 00:03:05,000
+Personnel Recovery per AJP-3.7 implements the five-task sequence:
+Reported, Located, Supported, Recovered, Reintegrated.
+
+22
+00:03:05,000 --> 00:03:15,000
+Movement per AJP-3.13 / 4.4 manages MSR / ASR / APOD / SPOD,
+status-coloured. Naval interdiction polygon editable on the COP.
+
+23
+00:03:15,000 --> 00:03:25,000
+Third-party integration is a first-order design constraint.
+Three documented JSON schemas plus the AIS schema.
+
+24
+00:03:25,000 --> 00:03:35,000
+Wrapped in a CycloneDX 1.7 / ECMA-424 envelope covering software,
+services, crypto, hardware, ML, ops and operational data.
+
+25
+00:03:35,000 --> 00:03:40,000
+Live-feed adapter, OPORD generator, and the foundation-model seam.
+
+26
+00:03:40,000 --> 00:03:50,000
+The platform ships as a strictly air-gapped runtime.
+Dependencies mirrored under dist/airgap/vendor.
+
+27
+00:03:50,000 --> 00:03:55,000
+A CycloneDX attestation accompanies the bundle, ready for signing.
+
+28
+00:03:55,000 --> 00:04:00,000
+Spec coverage 98.6 %. C23 NAVINT, by CONFIANZA23. Ready for evaluation.
