@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NATO CIS OPS v006 | Doctrinal Matrix & Use Cases</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --nato-blue: #004990;
+            --accent-gold: #fbbf24;
+            --accent-cyan: #22d3ee;
+            --bg-dark: #020617;
+            --glass: rgba(15, 23, 42, 0.95);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: #f1f5f9;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(251, 191, 36, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(34, 211, 238, 0.05) 0%, transparent 40%),
+                url('nato_ajp6_doctrine_dashboard_1778129017966.png');
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .section-label {
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            display: flex;
+            items-center: center;
+            gap: 8px;
+        }
+
+        .excel-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+            margin-top: 12px;
+        }
+
+        .excel-table th {
+            text-align: left;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .excel-table td {
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-toggle {
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-toggle:hover {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        .doctrinal-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.05) 0%, transparent 100%);
+            border-left: 4px solid var(--accent-gold);
+            padding: 16px;
+            border-radius: 0 12px 12px 0;
+            margin: 16px 0;
+        }
+
+        #copy-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent-cyan);
+            color: var(--bg-dark);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 800;
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12 min-h-screen">
+
+    <div id="copy-toast">Copied to Clipboard</div>
+
+    <header class="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-6">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/3/37/NATO_logo.svg/1200px-NATO_logo.svg.png" alt="NATO" class="h-16 w-16">
+            <div>
+                <h1 class="text-4xl font-black tracking-tighter">NATO <span class="text-amber-400">CIS-OPS</span></h1>
+                <p class="text-slate-400 font-bold tracking-[0.2em] text-[10px] uppercase mt-1">AJP-6 Allied Joint Doctrine | Build 006</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="toggleLanguage()" id="lang-btn" class="lang-toggle">ESPAÑOL</button>
+            <div class="h-8 w-[1px] bg-white/10"></div>
+            <button onclick="copyGlobal()" class="bg-cyan-500 hover:bg-cyan-600 text-bg-dark px-4 py-2 rounded-xl font-bold text-sm transition flex items-center gap-2">
+                <i data-lucide="table"></i> <span id="label-excel">EXCEL MATRIX</span>
+            </button>
+        </div>
+    </header>
+
+    <main id="use-cases-container" class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <!-- Injected by JS -->
+    </main>
+
+    <script>
+        let currentLang = 'en';
+
+        const data = {
+            en: {
+                langBtn: "ESPAÑOL",
+                excelBtn: "EXCEL MATRIX",
+                copyMsg: "Copied to Clipboard",
+                labels: {
+                    scenario: "Section 1: Scenario Overview",
+                    doctrine: "Section 2: Doctrinal Analysis (AJP-6)",
+                    technical: "Section 3: Technical Attribute Matrix",
+                    property: "Property",
+                    value: "Operational Specification",
+                    ajpPrinciple: "AJP-6 Principle",
+                    id: "Use Case"
+                },
+                cases: [
+                    {
+                        id: 1,
+                        title: "Ship-to-HQ (Arctic Ops)",
+                        scenario: "Communication originated by a surface ship in hostile conditions in the Arctic, facing hostile contact presence, aiming to transmit data up to NATO Secret to a coastal headquarters.",
+                        doctrine: "Adheres to the Resilience principle of AJP-6 by ensuring persistent connectivity in extreme latitudes. It prioritizes confidentiality and integrity over a redundant SAT/HF link under contested electromagnetic conditions.",
+                        tech: { env: "Hostile / Arctic", level: "NATO Secret", risk: "High (Interdiction)", algorithm: "AES-256-GCM", hw: "KG-175D TACLANE", keyMgmt: "OTAR", protocol: "STANAG 4622", antijam: "Beam Nulling" }
+                    },
+                    {
+                        id: 2,
+                        title: "Ship-to-Ship (Black Sea)",
+                        scenario: "Tactical data exchange between two frontline frigates in a high-density electronic warfare environment, coordinating air defense against asymmetric threats.",
+                        doctrine: "Implements Data-Centric Security as per AJP-6 Edition B. Information is protected at the object level, ensuring that target data remains secure even if the primary link is degraded by jamming.",
+                        tech: { env: "Hostile / EW Density", level: "NATO Secret", risk: "Active Jamming", algorithm: "ECC / Suite B", hw: "KGV-11 / KGV-252", keyMgmt: "SKL Pre-placed", protocol: "Link 22 / STANAG 5522", antijam: "D-TDMA Hopping" }
+                    },
+                    {
+                        id: 3,
+                        title: "Air-to-Ship (Atlantic Patrol)",
+                        scenario: "A Maritime Patrol Aircraft (MPA) reporting suspicious surface contact sightings to an escort destroyer in international waters under routine conditions.",
+                        doctrine: "Focuses on Interoperability within the Federated Mission Networking (FMN) framework. Uses standardized waveforms to allow seamless CIS service handover between Allied assets.",
+                        tech: { env: "Non-Hostile / Routine", level: "NATO Restricted", risk: "SIGINT Monitoring", algorithm: "AES-128", hw: "KY-58 VINSON", keyMgmt: "Manual Key Load", protocol: "Link 11 / STANAG 5511", antijam: "DSSS" }
+                    },
+                    {
+                        id: 4,
+                        title: "Ship-to-Air (Targeting Strike)",
+                        scenario: "Real-time targeting data transmission from a cruiser to a multi-role fighter for immediate intercept of an incoming anti-ship missile.",
+                        doctrine: "Ensures Command and Control (C2) persistence by providing low-latency, deterministic links. It follows the AJP-6 requirement for high-availability CIS supporting decentralized execution.",
+                        tech: { env: "Hostile / Active Combat", level: "NATO Secret", risk: "Time-Critical Intercept", algorithm: "NSA Suite B", hw: "KGV-8 (Link 16)", keyMgmt: "Dynamic Epoch Keys", protocol: "STANAG 5516", antijam: "Fast Hopping (77k/s)" }
+                    },
+                    {
+                        id: 5,
+                        title: "Submarine-to-Ship Uplink",
+                        scenario: "Submarine at periscope depth transmitting a flash intelligence report after detecting an enemy carrier group, minimizing emission time.",
+                        doctrine: "Applies the principle of Stealth and Data Protection. The CIS architecture is optimized for minimal burst transmissions to avoid detection, following 'Zero Trust' network protocols.",
+                        tech: { env: "Hostile / Stealth", level: "NATO Secret", risk: "Acoustic/RF Detection", algorithm: "ChaCha20-Poly1305", hw: "KG-250X", keyMgmt: "Cert-based", protocol: "Sub-Sat Comms", antijam: "Burst Transmission" }
+                    },
+                    {
+                        id: 6,
+                        title: "Logistics Fleet Support",
+                        scenario: "Administrative and supply coordination during a multinational exercise, ensuring accurate manifest delivery to support fleet sustainment.",
+                        doctrine: "Manages CIS assets through the Service Lifecycle approach. Focuses on the availability and integrity of logistics data across unclassified but sensitive networks.",
+                        tech: { env: "Non-Hostile / Exercise", level: "NATO Unclassified", risk: "None", algorithm: "SHA-256 / TLS 1.3", hw: "S/W Virtual Encryptor", keyMgmt: "Enterprise PKI", protocol: "STANAG 4406", antijam: "None" }
+                    },
+                    {
+                        id: 7,
+                        title: "Strategic Order (MARCOM)",
+                        scenario: "Transmission of strategic directives and ROE changes from NATO MARCOM to the fleet flagship in a high-tension zone.",
+                        doctrine: "Implements high-assurance Information Protection. Uses future-proof algorithms to ensure that strategic C2 orders remain confidential against long-term cryptographic threats.",
+                        tech: { env: "Hostile / Strategic", level: "NATO Secret", risk: "Command Hijack / High", algorithm: "Quantum-Resistant", hw: "TACLANE KG-175G", keyMgmt: "Centralized KMS", protocol: "Secure IP (SIP)", antijam: "Sat Diversity" }
+                    },
+                    {
+                        id: 8,
+                        title: "UAV-to-Ship ISR Feed",
+                        scenario: "Continuous high-definition video feed from a surveillance drone to the ship's Combat Information Center (CIC) in a contested strait.",
+                        doctrine: "Prioritizes Availability and Assurance. The architecture uses directional nulling to maintain the stream despite local interference, fulfilling AJP-6 surveillance CIS requirements.",
+                        tech: { env: "Hostile / Contested", level: "NATO Restricted", risk: "Localized Jamming", algorithm: "H.264 encrypted", hw: "CDL Encryptor", keyMgmt: "One-time Mission Key", protocol: "STANAG 4586", antijam: "Directional Beamforming" }
+                    },
+                    {
+                        id: 9,
+                        title: "Search and Rescue (SAR)",
+                        scenario: "Emergency coordination between a frigate and a partner civilian rescue vessel in extreme weather conditions and high-risk piracy zone.",
+                        doctrine: "Facilitates Interoperability with non-military partners. The CIS setup allows for a secure 'mission enclave' to protect identity data while coordinating rescue operations.",
+                        tech: { env: "Hostile / Extreme Weather", level: "NATO Restricted", risk: "Piracy / Identity", algorithm: "AES-256", hw: "RM7 Modem", keyMgmt: "Fleet Shared Key", protocol: "STANAG 5066", antijam: "FEC / Robust Waveform" }
+                    },
+                    {
+                        id: 10,
+                        title: "Sat-to-Ship (EMCON Alpha)",
+                        scenario: "Passive reception of intelligence updates from an AEHF satellite while the ship is under strict radio silence (EMCON Alpha).",
+                        doctrine: "Complies with the Stealth and Passive Reception doctrine. It leverages LPI/LPD (Low Probability of Intercept/Detection) waveforms to allow information flow without compromising ship location.",
+                        tech: { env: "Hostile / Silent", level: "NATO Secret", risk: "RF Geolocation", algorithm: "NSA Suite A", hw: "KGV-136", keyMgmt: "Autonomous Sync", protocol: "AEHF / MILSTAR", antijam: "LPI/LPD Waveforms" }
+                    },
+                    {
+                        id: 11,
+                        title: "Naval Fire Support (Shore)",
+                        scenario: "Coordinated naval gunfire support with Marine units on the ground, transmitting fire requests from the shore to the ship's bridge.",
+                        doctrine: "Ensures decentralized execution of C2. Tactical voice and data are protected to ensure that fire support requests cannot be spoofed or intercepted by hostile coastal batteries.",
+                        tech: { env: "Hostile / Amphibious", level: "NATO Secret", risk: "Electronic Spoofing", algorithm: "Symmetric Cipher", hw: "AN/PRC-117G", keyMgmt: "Physical SKL Fill", protocol: "HAVE QUICK II", antijam: "Fast Freq Hopping" }
+                    },
+                    {
+                        id: 12,
+                        title: "AWACS-to-Ship Relay",
+                        scenario: "AWACS aircraft extending the CIS network beyond the horizon to connect a remote surface group with the main command structure.",
+                        doctrine: "Maintains network Resilience via multi-node relays. It ensures that the operational picture is synchronized across the force, even when direct LOS links are blocked.",
+                        tech: { env: "Hostile / BLOS", level: "NATO Secret", risk: "Relay Interdiction", algorithm: "Triple-DES (Legacy)", hw: "KGV-8B", keyMgmt: "Daily Changing", protocol: "Link 16 Relay", antijam: "Erasure Coding" }
+                    },
+                    {
+                        id: 13,
+                        title: "Ship-to-Civilian Convoy",
+                        scenario: "Escort frigate providing navigation and security instructions to a merchant convoy in high-risk piracy waters.",
+                        doctrine: "Ensures Civil-Military Interoperability. Uses standard but authenticated protocols to provide protection for non-NATO participants within a secure CIS framework.",
+                        tech: { env: "Hostile / Piracy", level: "NATO Unclassified", risk: "Vessel Tracking", algorithm: "TLS 1.2 / AIS-SART", hw: "COTS Secure Router", keyMgmt: "Web-based Certs", protocol: "AIS-SART Secure", antijam: "None" }
+                    },
+                    {
+                        id: 14,
+                        title: "Mine Warfare Data Sync",
+                        scenario: "Minehunter sharing real-time sonar maps of detected minefields with the rest of the task group to ensure safe passage.",
+                        doctrine: "Prioritizes Data Integrity and Accuracy. The CIS setup ensures that tactical underwater pictures are shared without corruption, which is critical for fleet safety in minelaying zones.",
+                        tech: { env: "Hostile / Minelaying", level: "NATO Secret", risk: "Tactical Sabotage", algorithm: "AES-256-CTR", hw: "SITOPP Encoder", keyMgmt: "Mission Specific", protocol: "STANAG 4285", antijam: "Adaptive Filtering" }
+                    },
+                    {
+                        id: 15,
+                        title: "Shore-to-Ship SW Update",
+                        scenario: "Large-scale transfer of combat system software patches and intelligence signatures from a shore-based maintenance center.",
+                        doctrine: "Adheres to the CIS Lifecycle and Cybersecurity framework. Ensures the integrity of the software supply chain through strong authentication and encrypted transport of mission-critical code.",
+                        tech: { env: "Non-Hostile / Pier-side", level: "NATO Restricted", risk: "Malware Injection", algorithm: "RSA-4096 / SHA-512", hw: "KG-175F", keyMgmt: "Smartcard / CAC", protocol: "STANAG 4538", antijam: "ALE 3G" }
+                    },
+                    {
+                        id: 16,
+                        title: "Refueling at Sea (RAS)",
+                        scenario: "High-precision maneuver coordination for fuel and stores transfer between a tanker and a destroyer in a high-threat asymmetric zone.",
+                        doctrine: "Ensures Tactical Coordination in vulnerable states. High-availability DAMA links are used to manage the maneuver while maintaining a secure crypto bubble to prevent monitoring by hostile skiffs.",
+                        tech: { env: "Hostile / Vulnerable", level: "NATO Restricted", risk: "Asymmetric Attack", algorithm: "Twofish / AES", hw: "KY-99 ANDVT", keyMgmt: "OTAD", protocol: "STANAG 4249", antijam: "Time Slot Allocation" }
+                    }
+                ]
+            },
+            es: {
+                langBtn: "ENGLISH",
+                excelBtn: "MATRIZ EXCEL",
+                copyMsg: "Copiado al Portapapeles",
+                labels: {
+                    scenario: "Sección 1: Resumen del Escenario",
+                    doctrine: "Sección 2: Análisis Doctrinal (AJP-6)",
+                    technical: "Sección 3: Matriz de Atributos Técnicos",
+                    property: "Propiedad",
+                    value: "Especificación Operativa",
+                    ajpPrinciple: "Principio AJP-6",
+                    id: "Caso de Uso"
+                },
+                cases: [
+                    {
+                        id: 1,
+                        title: "Buque-HQ (Ops Árticas)",
+                        scenario: "Comunicación originada por un buque de superficie en condiciones hostiles en el Ártico, frente a presencia de contacto hostil, con el objetivo de transmitir datos hasta NATO Secret a un cuartel general en la costa.",
+                        doctrine: "Se adhiere al principio de Resiliencia de la AJP-6 al asegurar una conectividad persistente en latitudes extremas. Prioriza la confidencialidad e integridad sobre un enlace redundante SAT/HF en condiciones electromagnéticas disputadas.",
+                        tech: { env: "Hostil / Ártico", level: "NATO Secret", risk: "Alto (Interdicción)", algorithm: "AES-256-GCM", hw: "KG-175D TACLANE", keyMgmt: "OTAR", protocol: "STANAG 4622", antijam: "Nulidad de Haz Sat" }
+                    },
+                    {
+                        id: 2,
+                        title: "Buque-Buque (Mar Negro)",
+                        scenario: "Intercambio de datos tácticos entre dos fragatas de primera línea en un entorno de guerra electrónica de alta densidad, coordinando la defensa aérea contra amenazas asimétricas.",
+                        doctrine: "Implementa la Seguridad Centrada en los Datos según AJP-6 Edición B. La información está protegida a nivel de objeto, asegurando que los datos de objetivos permanezcan seguros incluso si el enlace primario es degradado por interferencias.",
+                        tech: { env: "Hostil / Densidad EW", level: "NATO Secret", risk: "Interferencia Activa", algorithm: "ECC / Suite B", hw: "KGV-11 / KGV-252", keyMgmt: "SKL Pre-posicionado", protocol: "Link 22 / STANAG 5522", antijam: "Salto D-TDMA" }
+                    },
+                    {
+                        id: 3,
+                        title: "Aire-Buque (Patrulla Atlántica)",
+                        scenario: "Una aeronave de patrulla marítima (MPA) informando avistamientos de contactos de superficie sospechosos a un destructor de escolta en aguas internacionales bajo condiciones rutinarias.",
+                        doctrine: "Se centra en la Interoperabilidad dentro del marco de Redes de Misión Federadas (FMN). Utiliza formas de onda estandarizadas para permitir un traspaso de servicios CIS sin interrupciones entre activos aliados.",
+                        tech: { env: "No Hostil / Rutina", level: "NATO Restricted", risk: "Monitoreo SIGINT", algorithm: "AES-128", hw: "KY-58 VINSON", keyMgmt: "Carga Manual de Clave", protocol: "Link 11 / STANAG 5511", antijam: "DSSS" }
+                    },
+                    {
+                        id: 4,
+                        title: "Buque-Aire (Ataque de Puntería)",
+                        scenario: "Transmisión de datos de puntería en tiempo real desde un crucero a un caza polivalente para la interceptación inmediata de un misil antibuque entrante.",
+                        doctrine: "Asegura la persistencia del Mando y Control (C2) proporcionando enlaces deterministas de baja latencia. Sigue el requisito de la AJP-6 de CIS de alta disponibilidad que soporte la ejecución descentralizada.",
+                        tech: { env: "Hostil / Combate Activo", level: "NATO Secret", risk: "Interceptación Crítica", algorithm: "NSA Suite B", hw: "KGV-8 (Link 16)", keyMgmt: "Claves de Época Dinámica", protocol: "STANAG 5516", antijam: "Salto Rápido (77k/s)" }
+                    },
+                    {
+                        id: 5,
+                        title: "Enlace Submarino-Buque",
+                        scenario: "Submarino a cota periscópica transmitiendo un informe de inteligencia flash tras detectar un grupo de portaaviones enemigo, minimizando el tiempo de emisión.",
+                        doctrine: "Aplica el principio de Sigilo y Protección de Datos. La arquitectura CIS está optimizada para transmisiones mínimas en ráfaga para evitar la detección, siguiendo protocolos de red 'Zero Trust'.",
+                        tech: { env: "Hostil / Sigilo", level: "NATO Secret", risk: "Detección Acústica/RF", algorithm: "ChaCha20-Poly1305", hw: "KG-250X", keyMgmt: "Basado en Certificados", protocol: "Comms Sub-Sat", antijam: "Transmisión en Ráfaga" }
+                    },
+                    {
+                        id: 6,
+                        title: "Apoyo Logístico de Flota",
+                        scenario: "Coordinación administrativa y de suministros durante un ejercicio multinacional, asegurando la entrega precisa de manifiestos para el sostenimiento de la flota.",
+                        doctrine: "Gestiona los activos CIS a través del enfoque de Ciclo de Vida del Servicio. Se centra en la disponibilidad e integridad de los datos logísticos en redes no clasificadas pero sensibles.",
+                        tech: { env: "No Hostil / Ejercicio", level: "NATO Unclassified", risk: "Ninguno", algorithm: "SHA-256 / TLS 1.3", hw: "Cifrador Virtual S/W", keyMgmt: "PKI Empresarial", protocol: "STANAG 4406", antijam: "Ninguno" }
+                    },
+                    {
+                        id: 7,
+                        title: "Orden Estratégica (MARCOM)",
+                        scenario: "Transmisión de directivas estratégicas y cambios en las ROE desde el MARCOM de la OTAN al buque insignia de la flota en una zona de alta tensión.",
+                        doctrine: "Implementa Protección de Información de alta seguridad. Utiliza algoritmos resistentes al futuro para asegurar que las órdenes de C2 estratégicas permanezcan confidenciales contra amenazas criptográficas a largo plazo.",
+                        tech: { env: "Hostil / Estratégico", level: "NATO Secret", risk: "Secuestro de Mando / Alto", algorithm: "Resistente a Cuántica", hw: "TACLANE KG-175G", keyMgmt: "KMS Centralizado", protocol: "IP Seguro (SIP)", antijam: "Diversidad Sat" }
+                    },
+                    {
+                        id: 8,
+                        title: "Feed ISR de UAV a Buque",
+                        scenario: "Feed de video de alta definición continuo desde un dron de vigilancia al Centro de Información de Combate (CIC) del buque en un estrecho en disputa.",
+                        doctrine: "Prioriza la Disponibilidad y el Aseguramiento. La arquitectura utiliza nulidad direccional para mantener el flujo a pesar de las interferencias locales, cumpliendo con los requisitos de CIS de vigilancia de la AJP-6.",
+                        tech: { env: "Hostil / Disputado", level: "NATO Restricted", risk: "Interferencia Localizada", algorithm: "H.264 cifrado", hw: "Cifrador CDL", keyMgmt: "Clave de Misión Única", protocol: "STANAG 4586", antijam: "Conformación de Haz" }
+                    },
+                    {
+                        id: 9,
+                        title: "Búsqueda y Rescate (SAR)",
+                        scenario: "Coordinación de emergencia entre una fragata y un buque de rescate civil socio en condiciones meteorológicas extremas y zona de piratería de alto riesgo.",
+                        doctrine: "Facilita la Interoperabilidad con socios no militares. La configuración CIS permite un 'enclave de misión' seguro para proteger los datos de identidad mientras se coordinan las operaciones de rescate.",
+                        tech: { env: "Hostil / Clima Extremo", level: "NATO Restricted", risk: "Piratería / Identidad", algorithm: "AES-256", hw: "Módem RM7", keyMgmt: "Clave Compartida de Flota", protocol: "STANAG 5066", antijam: "FEC / Forma de Onda Robusta" }
+                    },
+                    {
+                        id: 10,
+                        title: "Sat-Buque (EMCON Alpha)",
+                        scenario: "Recepción pasiva de actualizaciones de inteligencia desde un satélite AEHF mientras el buque está bajo estricto silencio radioeléctrico (EMCON Alpha).",
+                        doctrine: "Cumple con la doctrina de Sigilo y Recepción Pasiva. Aprovecha formas de onda LPI/LPD (Baja Probabilidad de Interceptación/Detección) para permitir el flujo de información sin comprometer la ubicación del buque.",
+                        tech: { env: "Hostil / Silencio", level: "NATO Secret", risk: "Geolocalización RF", algorithm: "NSA Suite A", hw: "KGV-136", keyMgmt: "Sincronización Autónoma", protocol: "AEHF / MILSTAR", antijam: "Formas de Onda LPI/LPD" }
+                    },
+                    {
+                        id: 11,
+                        title: "Apoyo de Fuego Naval (Costa)",
+                        scenario: "Apoyo coordinado de fuego de artillería naval con unidades de Infantería de Marina en tierra, transmitiendo peticiones de fuego desde la costa al puente del buque.",
+                        doctrine: "Asegura la ejecución descentralizada del C2. La voz y los datos tácticos están protegidos para asegurar que las peticiones de apoyo de fuego no puedan ser suplantadas o interceptadas por baterías costeras hostiles.",
+                        tech: { env: "Hostil / Anfibio", level: "NATO Secret", risk: "Suplantación Electrónica", algorithm: "Cifrado Simétrico", hw: "AN/PRC-117G", keyMgmt: "Carga Física SKL", protocol: "HAVE QUICK II", antijam: "Salto de Frecuencia Rápido" }
+                    },
+                    {
+                        id: 12,
+                        title: "Relé de AWACS a Buque",
+                        scenario: "Aeronave AWACS extendiendo la red CIS más allá del horizonte para conectar a un grupo de superficie remoto con la estructura de mando principal.",
+                        doctrine: "Mantiene la Resiliencia de la red mediante relés multi-nodo. Asegura que el panorama operativo esté sincronizado en toda la fuerza, incluso cuando los enlaces directos LOS están bloqueados.",
+                        tech: { env: "Hostil / BLOS", level: "NATO Secret", risk: "Interdicción de Relé", algorithm: "Triple-DES (Legado)", hw: "KGV-8B", keyMgmt: "Cambio Diario", protocol: "Relé Link 16", antijam: "Codificación de Borrado" }
+                    },
+                    {
+                        id: 13,
+                        title: "Buque a Convoy Civil",
+                        scenario: "Fragata de escolta proporcionando instrucciones de navegación y seguridad a un convoy mercante en aguas de piratería de alto riesgo.",
+                        doctrine: "Asegura la Interoperabilidad Cívico-Militar. Utiliza protocolos estándar pero autenticados para proporcionar protección a los participantes no pertenecientes a la OTAN dentro de un marco CIS seguro.",
+                        tech: { env: "Hostil / Piratería", level: "NATO Unclassified", risk: "Rastreo de Buques", algorithm: "TLS 1.2 / AIS-SART", hw: "Router Seguro COTS", keyMgmt: "Certs basados en Web", protocol: "AIS-SART Seguro", antijam: "Ninguno" }
+                    },
+                    {
+                        id: 14,
+                        title: "Sincronización Guerra de Minas",
+                        scenario: "Cazaminas compartiendo mapas de sonar en tiempo real de campos de minas detectados con el resto del grupo de tareas para asegurar el paso seguro.",
+                        doctrine: "Prioriza la Integridad y Precisión de los Datos. La configuración CIS asegura que las imágenes tácticas submarinas se compartan sin corrupción, lo cual es crítico para la seguridad de la flota en zonas minadas.",
+                        tech: { env: "Hostil / Minado", level: "NATO Secret", risk: "Sabotaje Táctico", algorithm: "AES-256-CTR", hw: "Codificador SITOPP", keyMgmt: "Específico de Misión", protocol: "STANAG 4285", antijam: "Filtrado Adaptativo" }
+                    },
+                    {
+                        id: 15,
+                        title: "Actualización SW Tierra-Buque",
+                        scenario: "Transferencia a gran escala de parches de software del sistema de combate y firmas de inteligencia desde un centro de mantenimiento en tierra.",
+                        doctrine: "Se adhiere al marco de Ciclo de Vida de CIS y Ciberseguridad. Asegura la integridad de la cadena de suministro de software mediante autenticación fuerte y transporte cifrado de código crítico para la misión.",
+                        tech: { env: "No Hostil / Muelle", level: "NATO Restricted", risk: "Inyección de Malware", algorithm: "RSA-4096 / SHA-512", hw: "KG-175F", keyMgmt: "Tarjeta Inteligente / CAC", protocol: "STANAG 4538", antijam: "ALE 3G" }
+                    },
+                    {
+                        id: 16,
+                        title: "Reabastecimiento en el Mar (RAS)",
+                        scenario: "Coordinación de maniobras de alta precisión para el trasvase de combustible y víveres entre un petrolero y un destructor en una zona de alta amenaza asimétrica.",
+                        doctrine: "Asegura la Coordinación Táctica en estados vulnerables. Se utilizan enlaces DAMA de alta disponibilidad para gestionar la maniobra mientras se mantiene una burbuja criptográfica segura para evitar el monitoreo.",
+                        tech: { env: "Hostil / Vulnerable", level: "NATO Restricted", risk: "Ataque Asimétrico", algorithm: "Twofish / AES", hw: "KY-99 ANDVT", keyMgmt: "OTAD", protocol: "STANAG 4249", antijam: "Asignación de Intervalos de Tiempo" }
+                    }
+                ]
+            }
+        };
+
+        function render() {
+            const container = document.getElementById('use-cases-container');
+            const langData = data[currentLang];
+            const labels = langData.labels;
+
+            document.getElementById('lang-btn').innerText = langData.langBtn;
+            document.getElementById('label-excel').innerText = langData.excelBtn;
+            document.getElementById('copy-toast').innerText = langData.copyMsg;
+
+            container.innerHTML = '';
+
+            langData.cases.forEach(c => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-8 animate-in fade-in duration-500 flex flex-col gap-6 shadow-2xl';
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                        <div class="flex items-center gap-3">
+                            <span class="bg-amber-500 text-bg-dark font-black px-3 py-1 rounded-lg text-sm">${labels.id} ${c.id}</span>
+                            <h2 class="text-xl font-bold text-white">${c.title}</h2>
+                        </div>
+                        <button onclick="copySingle(${c.id})" class="text-slate-500 hover:text-cyan-400 transition">
+                            <i data-lucide="copy" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <span class="section-label"><i data-lucide="map"></i> ${labels.scenario}</span>
+                            <p class="text-slate-300 leading-relaxed text-sm">${c.scenario}</p>
+                        </div>
+
+                        <div class="doctrinal-box">
+                            <span class="section-label"><i data-lucide="book-open"></i> ${labels.doctrine}</span>
+                            <p class="text-amber-200/90 text-sm italic font-light">"${c.doctrine}"</p>
+                        </div>
+
+                        <div>
+                            <span class="section-label"><i data-lucide="layout-grid"></i> ${labels.technical}</span>
+                            <table class="excel-table">
+                                <thead>
+                                    <tr><th>${labels.property}</th><th>${labels.value}</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.entries(c.tech).map(([k, v]) => `
+                                        <tr>
+                                            <td class="capitalize text-slate-400">${k.replace(/([A-Z])/g, ' $1')}</td>
+                                            <td class="${['algorithm','hw'].includes(k) ? 'mono text-cyan-400 font-bold' : 'text-white'}">${v}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'es' : 'en';
+            render();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('copy-toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+
+        function copySingle(id) {
+            const c = data[currentLang].cases.find(x => x.id === id);
+            const l = data[currentLang].labels;
+            let text = `${l.id} ${c.id}: ${c.title}\n\n`;
+            text += `${l.scenario}\n${c.scenario}\n\n`;
+            text += `${l.doctrine}\n${c.doctrine}\n\n`;
+            text += `${l.technical}\n`;
+            text += `${l.property}\t${l.value}\n`;
+            Object.entries(c.tech).forEach(([k, v]) => {
+                text += `${k}\t${v}\n`;
+            });
+            
+            navigator.clipboard.writeText(text);
+            showToast();
+        }
+
+        function copyGlobal() {
+            const langData = data[currentLang];
+            const l = langData.labels;
+            let text = `${l.id}\tTitle\tScenario\tDoctrine\tEnv\tLevel\tRisk\tAlgorithm\tHW\tKeyMgmt\tProtocol\n`;
+            
+            langData.cases.forEach(c => {
+                text += `${c.id}\t${c.title}\t${c.scenario}\t${c.doctrine}\t${c.tech.env}\t${c.tech.level}\t${c.tech.risk}\t${c.tech.algorithm}\t${c.tech.hw}\t${c.tech.keyMgmt}\t${c.tech.protocol}\n`;
+            });
+
+            navigator.clipboard.writeText(text);
+            showToast();
+        }
+
+        window.onload = render;
+    </script>
+</body>
+</html>
