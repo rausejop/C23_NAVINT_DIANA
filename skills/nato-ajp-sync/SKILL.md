@@ -1,7 +1,7 @@
 ---
 name: nato-ajp-sync
-description: Sync the local mirror of NATO Allied Joint Publications from gov.uk into AJP/<NN> directories using the bundled Python script.
-version: 1.0.0
+description: Sync the local mirror of NATO Allied Joint Publications from gov.uk into AJP/<NN>_<Title>/ directories (underscore-only naming) using the bundled Python script.
+version: 1.1.0
 author: CONFIANZA23
 slo:
   inputSchema: {}
@@ -18,7 +18,9 @@ tools: [Bash]
 # nato-ajp-sync
 
 ## Purpose
-Refresh the local mirror of every NATO Allied Joint Publication held under `AJP/<NN> …/` from the official UK MOD collection, so that other skills (`ajp-doctrine-summary`, `doctrine-roadmap-synthesis`) work against the latest editions.
+Refresh the local mirror of every NATO Allied Joint Publication held under `AJP/<NN>_<Title>/` from the official UK MOD collection, so that other skills (`ajp-doctrine-summary`, `doctrine-roadmap-synthesis`) work against the latest editions.
+
+**Naming contract:** directory names use underscores only — no spaces (`01_Allied_Joint_Doctrine_(AJP-01)`, not `01 Allied Joint Doctrine (AJP-01)`). The script in `AJP/update_ajp_doctrines.py` enforces this since 2026-05-07; if a future scrape lands a name with spaces, run `sanitize-folder-names` against `AJP/`.
 
 ## When to use
 - A new AJP edition is rumoured / known to have been released.
@@ -29,7 +31,7 @@ Refresh the local mirror of every NATO Allied Joint Publication held under `AJP/
 - (none — the script discovers publications from the source page)
 
 ## Outputs
-- New / updated PDFs in `AJP/<NN> <Title>/`.
+- New / updated PDFs in `AJP/<NN>_<Title>/`.
 - Stdout summary listing newly downloaded files and the total publication count.
 
 ## Instructions
@@ -62,7 +64,8 @@ Refresh the local mirror of every NATO Allied Joint Publication held under `AJP/
 
 ## Anti-patterns
 - ❌ Editing the script to add `pip install` lines. It is stdlib-only by design, which is what makes it air-gappable on a tactical workstation that already has Python.
-- ❌ Re-implementing the scraper instead of running it. The directory-naming convention (`NN Title`) is the contract; do not break it.
+- ❌ Re-implementing the scraper instead of running it. The directory-naming convention (`NN_Title`, underscores only) is the contract; do not break it.
+- ❌ Reverting the underscore convention back to spaces. Spaces force every downstream consumer (Bash, Python globs, Markdown links) to URL-encode or quote the path — breaking shell pipelines and link tables. If you ever see a space-named directory, run `sanitize-folder-names`, do not rename ad-hoc.
 - ❌ Using `wget --mirror` against gov.uk — you will fetch the entire collection page tree, not just the PDFs.
 
 ## References

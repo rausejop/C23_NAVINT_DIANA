@@ -82,6 +82,8 @@ All skills are designed to be **modular and stateless**. The defining authority 
 | # | Skill | Purpose |
 |---|---|---|
 | 17b | [`diana-proposal-draft`](diana-proposal-draft/SKILL.md) | **NewDraft** — generate a copy-paste-ready DIANA "New Draft Proposal" mapping every form field to a self-verifying char-budgeted answer; cites the live C23 NAVINT artefact and the pitch deck financial / team / market figures. |
+| 17c | [`playwright-spa-screenshots`](playwright-spa-screenshots/SKILL.md) | **DIANA images** — capture publication-quality PNGs from a single-file SPA via Playwright; uses the `.modal` locator pattern so backdrops do not bleed into the frame. Reference impl: `tools/capture_diana_screenshots.py`. |
+| 17d | [`narrated-demo-video`](narrated-demo-video/SKILL.md) | **DIANA video** — produce a narrated screencast (≤4 min MP4) with TTS voice-over, English subtitles burned in, and a visible animated cursor that leads every click. Reference impl: `tools/generate_narration.py` + `tools/capture_diana_video.py`. |
 
 ### Doctrine ingestion
 
@@ -89,7 +91,8 @@ All skills are designed to be **modular and stateless**. The defining authority 
 |---|---|---|
 | 18 | [`ajp-doctrine-summary`](ajp-doctrine-summary/SKILL.md) | Produce a consistent per-AJP Markdown summary suitable for indexing and roadmap synthesis. |
 | 19 | [`doctrine-roadmap-synthesis`](doctrine-roadmap-synthesis/SKILL.md) | Consolidate per-doctrine summaries into a prioritised platform roadmap. |
-| 20 | [`nato-ajp-sync`](nato-ajp-sync/SKILL.md) | Sync the local mirror of NATO Allied Joint Publications from gov.uk (wraps `AJP/update_ajp_doctrines.py`). |
+| 20 | [`nato-ajp-sync`](nato-ajp-sync/SKILL.md) | **v1.1** — sync the local mirror of NATO Allied Joint Publications from gov.uk (wraps `AJP/update_ajp_doctrines.py`); enforces underscore-only `NN_<Title>` directory names. |
+| 21 | [`sanitize-folder-names`](sanitize-folder-names/SKILL.md) | Rename subdirectories to remove shell-hostile characters (spaces → underscores by default) and rewrite every dependent script / link table in lock-step. |
 
 ## How a harness should use this
 

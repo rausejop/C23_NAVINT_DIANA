@@ -23,7 +23,7 @@ tools: [Read, Write]
 Produce one Markdown file per NATO Allied Joint Publication, in a strictly identical structure, so they can be diffed, indexed, fed to a roadmap synthesiser (`doctrine-roadmap-synthesis`), and surfaced inside an Acronyms tab.
 
 ## When to use
-- A new AJP edition lands in `AJP/<NN> …/`.
+- A new AJP edition lands in `AJP/<NN>_<Title>/` (underscore-only naming since 2026-05-07).
 - Doctrine reading is required for a platform feature decision.
 - The user asks for "doctrine summary", "AJP summary", "what does AJP-X say".
 

@@ -168,6 +168,8 @@ When a block reports `OVER N`:
 - Skill `char-budget-respect` — the general pattern this skill applies.
 - Skill `roadmap-driven-release` — sibling skill for picking what ships next.
 - Skill `resumable-execution-state` — pair with this skill if the proposal-writing run is multi-session.
+- Skill `playwright-spa-screenshots` — produces the 5 PNG stills (Short-Form 1+2, Long-Form 1+2+3) referenced in the IMAGES block of NewDraft.md.
+- Skill `narrated-demo-video` — produces the ≤4-min MP4 demo video referenced in the "Upload a Video" section of the DIANA portal.
 
 ## DIANA-evaluator priorities (encoded preferences from prior iterations)
 
