@@ -38,23 +38,36 @@ The 5 ★ FM-01..FM-05 items (foundation-model swap) stay out of scope per check
 
 ---
 
-## Where I am right now
+## Where I am right now (2026-05-03, end of session)
 
-**Last action:** v009 sealed. Cubo B hard complete (ANALYTICS tab: AN-01 + AN-03 + LD-01 + WF-04).
-**Next action:** ALL FIVE CUBOS DONE — request fully executed. The only remaining
-known backlog is the 5 ★ FM-01..FM-05 (foundation-model swap), explicitly out
-of scope at TRL 6+.
+**Last action:** Submission package COMPLETE end-to-end. v011 sealed; NewDraft.md
+char-budgeted across all 9 sections; 5 PNG screenshots produced; 4-min narrated
+MP4 video produced (with TTS voice + visible cursor + burned subtitles); 2 new
+skills authored (`playwright-spa-screenshots`, `narrated-demo-video`).
+Unsuffixed `C23_DIANA_NATO_WARFIGHTERS.html` re-synced to match `_v011.html`
+exactly (md5 `e317294837f1455d086267509e7b34ce`).
 
-**Live SPA chain after v006:**
+**Next action:** Submit to DIANA portal. Nothing pending in this repo other than
+the 5 ★ FM-01..FM-05 backlog (foundation-model swap, deliberately deferred).
+
+**Live SPA chain after v011 (current):**
 ```
-C23_DIANA_NATO_WARFIGHTERS.html        (= v006, ~219 KB)
-C23_DIANA_NATO_WARFIGHTERS_v001.html
-C23_DIANA_NATO_WARFIGHTERS_v002.html
-C23_DIANA_NATO_WARFIGHTERS_v003.html
-C23_DIANA_NATO_WARFIGHTERS_v004.html
-C23_DIANA_NATO_WARFIGHTERS_v005.html
-C23_DIANA_NATO_WARFIGHTERS_v006.html
+C23_DIANA_NATO_WARFIGHTERS.html        (= v011, 279816 B, md5 e317294...)
+C23_DIANA_NATO_WARFIGHTERS_v001.html  (135 KB)
+C23_DIANA_NATO_WARFIGHTERS_v002.html  (173)
+C23_DIANA_NATO_WARFIGHTERS_v003.html  (178)
+C23_DIANA_NATO_WARFIGHTERS_v004.html  (186)
+C23_DIANA_NATO_WARFIGHTERS_v005.html  (210)
+C23_DIANA_NATO_WARFIGHTERS_v006.html  (222)
+C23_DIANA_NATO_WARFIGHTERS_v007.html  (226)
+C23_DIANA_NATO_WARFIGHTERS_v008.html  (235)
+C23_DIANA_NATO_WARFIGHTERS_v009.html  (246)
+C23_DIANA_NATO_WARFIGHTERS_v010.html  (269)
+C23_DIANA_NATO_WARFIGHTERS_v011.html  (280) ← latest sealed
 tools/build_airgap_bundle.sh
+tools/capture_diana_screenshots.py
+tools/capture_diana_video.py
+tools/generate_narration.py
 ```
 
 ---
@@ -166,6 +179,68 @@ v001 (135 KB) v002 (173) v003 (178) v004 (186) v005 (210) v006 (222) v007 (226) 
 **Mission Editor:** 13 → 19 tabs.
 **Skills shipped:** se podrían crear para v005-v009 si el usuario lo pide.
 **Roadmap status:** sólo quedan los 5 ★ FM-01..FM-05 (foundation-model swap, fuera de TRL 6+).
+
+---
+
+## Submission-package work (post-v011, 2026-05-03)
+
+After v011 sealed, the user requested the full DIANA submission package. Each
+subsection captures what was produced and where; the next session can verify
+deliverables exist and re-run any tool from these notes alone.
+
+### NewDraft.md (DIANA "New Draft Proposal" form)
+
+- **File:** `NewDraft.md` (31 764 B at repo root).
+- **Form text source:** `Specifications/20260503 New Draft Proposal.txt`.
+- **Char limits enforced:** SF1-4 = 1500 each · LF1 Abstract = 750 · LF2 Technical Merit = 12 000 · LF3-5 = 3500 each.
+- **Section 5 (Company and Commercial)** populated from `Pitch Deck_NAVINT v20260501v2.pdf` (financial plan 2027/2028/2029, team, advisory board, certifications, TAM/SAM/SOM, pricing tiers, GTM).
+- **Final state:** all 9 sections within budget (margin 8 – 1506 chars).
+- **Verification helper:** Perl one-liner inside `skills/diana-proposal-draft/SKILL.md` § "Char-budget verification helper".
+- **Skill applied:** `diana-proposal-draft` + `char-budget-respect` (5-pass trim protocol).
+
+### Screenshots (DIANA short-form + long-form images)
+
+- **Files (5):** `dist/screenshots/`
+  - `short_1_global_cop.png` (1.99 MB) — global multi-domain COP with all overlays
+  - `short_2_wargaming.png` (181 KB) — pairwise NATO×OPFOR matrix
+  - `long_1_joint_targeting.png` (227 KB) — JTC + JPTL
+  - `long_2_analytics_cascades.png` (304 KB) — cascade rules editor
+  - `long_3_jprc.png` (158 KB) — Personnel Recovery / JPRC
+- **Tool:** `tools/capture_diana_screenshots.py` (Playwright headless, `device_scale_factor: 2`).
+- **Key learning:** for modal captures use `page.locator('.modal').screenshot()` not `page.screenshot()` so the dim backdrop does not bleed into the frame. Codified in skill `playwright-spa-screenshots`.
+
+### Video (DIANA "Upload a Video")
+
+- **File:** `dist/video/diana_demo.mp4` (10.83 MB / 4:00.00 / 1920×1080 H.264 + AAC stereo 48 kHz).
+- **DIANA limits:** ≤ 4 min OK · ≤ 100 MB OK · MP4 OK · English voice + English subtitles OK · screen capture + audio commentary OK.
+- **Pipeline (two-step, re-runnable):**
+  1. `python tools/generate_narration.py` — synthesises 10 per-scene MP3s via `edge-tts` (`en-GB-RyanNeural`, `+8%` rate); per-scene padding/atempo to fit each storyboard window; concatenates to `dist/video/narration/narration.wav` (238.5 s + 1.5 s tail silence).
+  2. `python tools/capture_diana_video.py` — drives Playwright through 10 scenes with a yellow-on-NATO-blue **visible cursor overlay** (`#__c23_cursor` + click pulse-ring `#__c23_ring`) injected after each `goto()`; mouse motion before every click via `move_cursor(steps=22, ease-in-out)`; ffmpeg muxes `webm + narration.wav`, burns subtitles with `force_style='PrimaryColour=&H00FFFFFF,...,BorderStyle=3,BackColour=&HB0000000,MarginV=60,Bold=1'`, caps to `-t 240`.
+- **Inputs (kept editable):** `dist/video/storyboard.md` (10 scenes, 595 words at 150 wpm) · `dist/video/subtitles.srt` (28 cues).
+- **Backups:** `dist/video/raw/<random>.webm` (silent Playwright capture).
+- **Recurring trap encountered + fixed:** ASS `PrimaryColour=&HFFFFFFFF` = alpha-FF in libass = TRANSPARENT text → invisible subtitles. Fix is `&H00FFFFFF`. Documented as anti-pattern in skill `narrated-demo-video`.
+
+### Skills authored or updated
+
+- **NEW** `skills/playwright-spa-screenshots/SKILL.md` — packages the screenshot pattern.
+- **NEW** `skills/narrated-demo-video/SKILL.md` — packages the TTS + cursor + burn-in pattern; includes voice table, DIANA compliance checklist, and the exact ffmpeg command.
+- **UPDATED** `skills/README.md` — index rows 17c, 17d added under "Submissions & proposals" (catalogue grew 33 → 35 skills).
+- **UPDATED** `skills/diana-proposal-draft/SKILL.md` — References section now cross-links the two new sibling skills.
+
+### Tools added this session
+
+- `tools/capture_diana_screenshots.py` — earlier session.
+- `tools/generate_narration.py` — TTS step (Edge `en-GB-RyanNeural`).
+- `tools/capture_diana_video.py` — Playwright recorder + cursor overlay + ffmpeg mux + subtitle burn-in.
+
+### Inventory check command (run at start of next session to verify state)
+
+```bash
+md5sum C23_DIANA_NATO_WARFIGHTERS_v011.html C23_DIANA_NATO_WARFIGHTERS.html  # must match
+ls -la dist/screenshots/ dist/video/diana_demo.mp4 NewDraft.md
+ffprobe -v error -show_entries format=duration,size -of default=noprint_wrappers=0 dist/video/diana_demo.mp4
+ls skills/ | wc -l   # expect 36 (35 skills + README)
+```
 
 ---
 

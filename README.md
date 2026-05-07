@@ -2,14 +2,20 @@
 
 **A doctrine-driven AI decision-superiority augmentation for Maven Smart System NATO and Allied C2 platforms.**
 
+> **Submitted to the DIANA Warfighters Challenge 2026 as an Open-Source Intelligence (OSINT) proof of concept.** Every fact, unit, location, equipment fitting, force-structure detail, and event in the platform — including the 50-entry Eastern Flank Order of Battle regenerated for D-day 2026-05-07 — has been derived exclusively from publicly available, openly cited open-source material (NATO factsheets, national ministries of defence, parliamentary research briefs, defence press, and academic OSINT analyses). No classified, restricted, controlled-unclassified, or commercially licensed intelligence has been used to build, train, seed or validate this platform. See § 1.1 below and the in-platform **INFO → SOURCES (OSINT)** tab for per-unit citations.
+
 | Field | Value |
 | --- | --- |
 | **Working name** | C23 NAVINT (Naval Intelligence) · NAVINT Baltic Sentry default mission |
 | **Submitter** | Rafael Ausejo Prieto · CONFIANZA23 INTELIGENCIA Y SEGURIDAD SL |
 | **Reference** | C23-NATO-DIANA-Warfighters |
-| **Submission target** | DIANA "Decision Superiority for NATO Warfighters" Challenge — submission window closes 5 May 2026 09:00 BST |
-| **Latest sealed version** | `C23_DIANA_NATO_WARFIGHTERS_v011.html` (~277 KB single-file SPA) |
+| **Submission status** | ✓ **Submitted** to the DIANA "Decision Superiority for NATO Warfighters" Challenge 2026 (window closed 5 May 2026 09:00 BST) |
+| **Submission positioning** | Proof of concept for **Open-Source Intelligence (OSINT)** in NATO operational decision-support |
+| **Data provenance** | 100 % OSINT — every datum cited to a publicly retrievable source. Per-unit citations live in `mission.sources[]` and are surfaced in the in-platform **INFO → SOURCES (OSINT)** tab. |
+| **Latest sealed version** | `C23_DIANA_NATO_WARFIGHTERS_v012.html` (~302 KB single-file SPA) — OSINT-anchored OOB regenerated 2026-05-07 |
 | **Air-gap bundle** | `dist/airgap/` — ~5.5 MB without tiles, ready for SCIF deployment |
+| **Submission images** | `dist/screenshots/` — 5 PNGs (Short-Form 1+2, Long-Form 1+2+3) |
+| **Submission video** | `dist/video/diana_demo.mp4` — 4:00.00 / 10.83 MB / H.264 + AAC + EN subtitles + EN voice-over |
 | **Spec coverage** | 73 / 74 = **98.6 %** (single 🟡, four ★ behind named foundation-model seams) |
 | **Doctrinal anchor** | All 33 NATO Allied Joint Publications (AJP-01 through AJP-10.3) mirrored locally and bound to platform features |
 | **Hardware floor** | 16 GB RAM tactical workstation (Windows or Linux) |
@@ -28,6 +34,19 @@ The decision-support core comprises a five-level Analysis of Competing Hypothese
 
 The platform is delivered as a strictly air-gapped runtime: the entire dependency graph is mirrored under `dist/airgap/vendor/` and a CycloneDX 1.7 / ECMA-424 attestation (`dist/airgap/cdax.json`) is shipped alongside, ready for organisational signature. The foundation-model integration is named, scoped and seam-ready (`autoSelectCoA()`), but deliberately deferred to the post-demonstration accreditation phase.
 
+### 1.1 · OSINT proof-of-concept positioning
+
+C23 NAVINT was submitted to the DIANA Warfighters Challenge 2026 not just as a decision-support platform, but as a deliberate **proof of concept for Open-Source Intelligence (OSINT)** in NATO operational C2. The thesis is that the modern open-source landscape — alliance press releases, national MoDs, parliamentary research, academic monitoring projects, defence press, AIS feeds, satellite open data — is rich enough to populate a defensible, doctrinally-coherent operating picture without ever touching classified holdings, and that doing so is a useful capability in its own right (training, exercises, alliance interoperability, coalition partner enablement, public-facing strategic communications, accreditation pathfinder).
+
+Concrete OSINT discipline applied to this submission:
+
+- **Every Order-of-Battle entry** in the v012 build (50 units across NATO eFP/MNBs, Polish divisions, multinational HQs, BAP detachments, SNMG1/SNMCMG1 ships, Russian Leningrad MD / 11th Army Corps / Baltic Fleet, Belarus Western OC) is anchored to a public reference recorded in `mission.sources[]` with topic, citation text, URL and retrieval date. The dataset round-trips through JSON export/import like every other field, so receivers can audit it.
+- **No classified, NATO-RESTRICTED, NATO-CONFIDENTIAL, NATO-SECRET, national caveat-bearing, FOUO, CUI or commercially-licensed intelligence** has been ingested at any point. This includes the doctrinal binding: only publicly released NATO Allied Joint Publications (the 33 AJPs from gov.uk) were mirrored.
+- **Provenance is auditable from the platform itself** — opening the `ⓘ INFO` modal and selecting the new **SOURCES (OSINT)** tab renders the citation table directly from `mission.sources[]`, so an evaluator can verify each unit without ever leaving the SPA.
+- **Reproducibility:** because every source is a public URL with a retrieval date, an independent analyst can re-run the OSINT loop and reach the same picture. The OOB is not a curated intelligence product — it is a reproducible OSINT artefact.
+
+This positioning matters operationally: an OSINT-only COP is releasable to non-cleared coalition partners, to host-nation civilian liaison, to academic and industry collaborators, and to the public-affairs strand of strategic communications without the friction of a classification review. It is also the right starting point for accrediting the future foundation-model integration: the corpus the model would consume is auditable end-to-end.
+
 ---
 
 ## 2 · Repository layout
@@ -35,7 +54,7 @@ The platform is delivered as a strictly air-gapped runtime: the entire dependenc
 ```
 12 Allied Joint Doctrine/
 │
-├── C23_DIANA_NATO_WARFIGHTERS.html              ← Latest version (currently = v011)
+├── C23_DIANA_NATO_WARFIGHTERS.html              ← Latest version (currently = v012)
 ├── C23_DIANA_NATO_WARFIGHTERS_v001.html         ← Initial baseline
 ├── C23_DIANA_NATO_WARFIGHTERS_v002.html         ← Joint Targeting + Movement + Posture + CYBER + NEUTRAL
 ├── C23_DIANA_NATO_WARFIGHTERS_v003.html         ← Official logos + 5-level ACH + button grid
@@ -47,6 +66,7 @@ The platform is delivered as a strictly air-gapped runtime: the entire dependenc
 ├── C23_DIANA_NATO_WARFIGHTERS_v009.html         ← Cubo B hard: correlation + cascades + live-feed + Ops Assessment
 ├── C23_DIANA_NATO_WARFIGHTERS_v010.html         ← Doctrine breadth: PR/JPRC + Branches/Sequels + LOO/LOE + cascade rules table
 ├── C23_DIANA_NATO_WARFIGHTERS_v011.html         ← Wargaming + COP overlays + ATO + air-gap bundle + CDAX
+├── C23_DIANA_NATO_WARFIGHTERS_v012.html         ← OSINT-anchored OOB regen 2026-05-07 + animation pipeline restored + INFO/SOURCES tab
 │
 ├── README.md                                    ← This file
 ├── CLAUDE.md                                    ← Working notes for Claude Code (versioning rule)
@@ -85,7 +105,7 @@ The platform is delivered as a strictly air-gapped runtime: the entire dependenc
 │       └── AJP-10.3.md
 │
 ├── skills/                                      ← Reusable Agent Skills catalogue
-│   ├── README.md                                ← Index (33 skills + README)
+│   ├── README.md                                ← Index (35 skills + README)
 │   ├── make-skill/SKILL.md                      ← Meta-skill: how to author a skill
 │   ├── diana-proposal-draft/SKILL.md            ← DIANA proposal generator
 │   ├── char-budget-respect/SKILL.md             ← Per-section char-limit pattern
@@ -93,18 +113,35 @@ The platform is delivered as a strictly air-gapped runtime: the entire dependenc
 │   └── (see § 9 for full list)
 │
 ├── tools/
-│   └── build_airgap_bundle.sh                   ← stdlib + curl air-gap bundler (DP-01)
+│   ├── build_airgap_bundle.sh                   ← stdlib + curl air-gap bundler (DP-01)
+│   ├── capture_diana_screenshots.py             ← Playwright screenshot capture (5 PNGs)
+│   ├── generate_narration.py                    ← Edge-TTS narration synthesis (per-scene MP3 + WAV)
+│   └── capture_diana_video.py                   ← Playwright video capture w/ visible cursor + ffmpeg mux
 │
 └── dist/
-    └── airgap/                                  ← Materialised offline runtime (~5.5 MB without tiles)
-        ├── index.html                           ← SPA with rewritten <head> URLs
-        ├── cdax.json                            ← CycloneDX 1.7 attestation skeleton (pending sign)
-        └── vendor/
-            ├── leaflet-1.9.4/                   ← leaflet.js + .css + 3 marker images
-            ├── milsymbol/                       ← APP-6 / MIL-STD-2525B renderer
-            ├── react-18.3.1/                    ← React UMD
-            ├── react-dom-18.3.1/                ← ReactDOM UMD
-            └── babel-7.29.0/                    ← @babel/standalone for in-browser JSX
+    ├── airgap/                                  ← Materialised offline runtime (~5.5 MB without tiles)
+    │   ├── index.html                           ← SPA with rewritten <head> URLs
+    │   ├── cdax.json                            ← CycloneDX 1.7 attestation skeleton (pending sign)
+    │   └── vendor/
+    │       ├── leaflet-1.9.4/                   ← leaflet.js + .css + 3 marker images
+    │       ├── milsymbol/                       ← APP-6 / MIL-STD-2525B renderer
+    │       ├── react-18.3.1/                    ← React UMD
+    │       ├── react-dom-18.3.1/                ← ReactDOM UMD
+    │       └── babel-7.29.0/                    ← @babel/standalone for in-browser JSX
+    │
+    ├── screenshots/                             ← DIANA submission images (5 PNGs, 1920×1080 ×2)
+    │   ├── short_1_global_cop.png               ← Short-Form Image 1 — global multi-domain COP
+    │   ├── short_2_wargaming.png                ← Short-Form Image 2 — pairwise NATO×OPFOR matrix
+    │   ├── long_1_joint_targeting.png           ← Long-Form Image 1 — JTC + JPTL
+    │   ├── long_2_analytics_cascades.png        ← Long-Form Image 2 — cascade rules editor
+    │   └── long_3_jprc.png                      ← Long-Form Image 3 — Personnel Recovery / JPRC
+    │
+    └── video/                                   ← DIANA submission video deliverable
+        ├── diana_demo.mp4                       ← Final: 4:00.00 / 10.83 MB / H.264+AAC + EN voice + EN subs
+        ├── storyboard.md                        ← 10-scene script (595 words at 150 wpm)
+        ├── subtitles.srt                        ← 28 cues aligned to scene boundaries
+        ├── narration/                           ← Per-scene Edge-TTS MP3s + concatenated WAV (en-GB-RyanNeural)
+        └── raw/                                 ← Playwright's silent .webm recording (kept as backup)
 ```
 
 ---
@@ -286,11 +323,11 @@ Every versioned file contains its own changelog header (`+ added · ~ improved �
 | `AJP/<NN> …/*.pdf` | The 33 AJP PDFs themselves (mirrored from gov.uk via `update_ajp_doctrines.py`) | Doctrinal source |
 | `tools/build_airgap_bundle.sh` | Stdlib + curl bundler (mirrors all CDN deps + Carto tiles + fonts; rewrites SPA `<head>`) | Deployers |
 | `dist/airgap/*` | Materialised offline runtime (~5.5 MB without tiles) | SCIF deployment |
-| `skills/<skill-name>/SKILL.md` | Reusable Agent Skills catalogue (33 skills, see § 9) | Agentic frameworks, future Claude sessions |
+| `skills/<skill-name>/SKILL.md` | Reusable Agent Skills catalogue (35 skills, see § 9) | Agentic frameworks, future Claude sessions |
 
 ---
 
-## 9 · Skills catalogue (33 reusable Agent Skills)
+## 9 · Skills catalogue (35 reusable Agent Skills)
 
 Every skill is a directory with a `SKILL.md` file (YAML frontmatter + standardised sections: Purpose / When to use / Inputs / Outputs / Instructions / Examples / Anti-patterns / References). The catalogue follows the SLO Agent Skills framework per the Master Prompt ANNEX.
 
@@ -341,6 +378,8 @@ Every skill is a directory with a `SKILL.md` file (YAML frontmatter + standardis
 | Skill | One-line purpose |
 | --- | --- |
 | `diana-proposal-draft` | Generate a copy-paste-ready DIANA "New Draft Proposal" mapping every form field to a self-verifying char-budgeted answer; cites the live C23 NAVINT artefact and the pitch deck figures |
+| `playwright-spa-screenshots` | Capture publication-quality PNGs from a single-file SPA via Playwright; uses `.modal` locator pattern so backdrops do not bleed into the frame |
+| `narrated-demo-video` | Produce a narrated screencast (≤4 min MP4) with TTS voice-over (Edge `en-GB-RyanNeural`), English subtitles burned in, and a visible animated cursor that leads every click |
 
 ### 9.5 Deployment & data
 
