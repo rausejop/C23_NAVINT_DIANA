@@ -1,0 +1,49 @@
+# Maritime Communications
+Quiero generar una web Single Page Application en Inglés NATO para que genere automáticamente la explosión combinatoria de todos los posibles Use Case UC001, Use Case UC002, Use Case UC003, etc. para todos y cada uno de los Serial S1, S2, S3, S4, etc. del estándar MC 195/12  ATO Minimum Common Ship-Fitting Standards for Radio Communication Equipment y muestre para cada Use Case una tabla con los siguientes elementos:
+- Fequencies: indicando el tipo de comunicación (SATCOM, UHF, etc.) y su frecuencia de uso en Hz
+- Time Window: la ventana de tiempo en que se establece la comunicación
+- Environment: Friend o Not Friend
+- Zones, CoI: Zonas NATO o Community of Interest 
+- IER: Information Exchange Requirements
+- Availability
+- Classification: NU, NR, NS, MS
+- Risk (LPI, LPD): Low Probability of Detection, Low Probability of Intercept, definidos en laAJP-3.6 (Allied Joint Doctrine for Electronic Warfare), aunque su aplicación operativa en el entorno naval se detalla en la AJP-3.1 (Allied Joint Doctrine for Maritime Operations)
+- Attack Surface
+
+# Elementos a consultar
+## La web debe estar realizada siguiendo los estándares [AP-06 NATO Glossary of Terms and Definitions]
+y AP-15 NATO Glossary of Alos Allied Joint Publications que les apliquen, disponibles en https://www.gov.uk/government/collections/allied-joint-publication-ajp
+
+## FMN Spiral Alignment: STANAG 4711 is used to define the standards profile for Federated Mission Networking (FMN) Spiral 4.
+
+
+## Cuando algún documento como el MC 195/12 no esté público en Internet, habrá que obtenerlo extrapolando las fuentes públicas disponibles en Internet
+
+
+REFERENCIAS:
+
+- [AC/322-D(2024)0053] NATO Interoperability Standards & Profiles, disponible en
+  https://nhqc3s.hq.nato.int/apps/nisp/NISP_Baseline_16_Catalogue_5SEP2024_enclosure_only.pdf
+  Muestra PFL-00404 "Maritime C2 Information Exchange Profile (FMN Spiral 5)" además de
+   The maritime conflict and operation themes are likely to cover the following types of operations in the
+maritime environment (AJP-3.1):
+• Major combat operations,
+• Peace support,
+• Peacetime military engagement.
+Maritime forces have roles in the following activities:
+• Warfare and combat,
+• Maritime security,
+• Security cooperation
+
+
+- STANAG 1166 MT (EDITION 6) - STANDARD SHIP DESIGNATOR SYSTEM
+  https://navalmarinearchive.com/research/pdf/stanag_1166(ed6)_standard_ship_designator_system.pdf
+  See STANDARD SHIP DESIGNATOR SYSTEM - ED 8 - see NATO APP-20 for Annex A & B;
+
+- NATO STANDARD AJP-6 ALLIED JOINT DOCTRINE FOR COMMUNICATION AND INFORMATION SYSTEMS
+  https://www.coemed.org/files/stanags/01_AJP/AJP-6_EDB_V1_E_2525.pdf
+
+- APP-7(D) JOINT BREVITY WORDS PUBLICATION
+  https://server.3rd-wing.net/public/Photun/APP-7D.pdf
+
+- [APP-11 NATO Message Text Formats]: 
