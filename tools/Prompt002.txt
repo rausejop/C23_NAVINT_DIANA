@@ -1,0 +1,917 @@
+================================================================================
+PROMPT 002  —  MaritimeCommunications_v002.html  (full regeneration spec, EN)
+================================================================================
+
+GOAL
+----
+Build a single-page application named exactly `MaritimeCommunications_v002.html`
+that visualises the combinatorial explosion of NATO maritime Use Cases
+(UC001..UCnnn) against Serials (S1..Sn), where — per MC 0195/12 — **each Serial
+IS an Information Exchange Requirement (IER)**. The page is in NATO English
+with a runtime EN ⇄ ES toggle. It must be **a single, self-contained `.html`
+file** (no sibling assets folder, no CDN, no runtime fetches) and aligned with
+NATO doctrine.
+
+
+CORE CONCEPT — SERIALS ARE IERs
+-------------------------------
+An IER is the formal description of a tactical need to transfer information.
+Per MC 0195/12 it answers:
+
+  Who         — origin → destination
+  What        — content type and format
+  When        — latency / cadence
+  Protection  — classification + integrity / authenticity posture
+  Precedence  — Flash / Immediate / Priority / Routine (and edge labels like
+                "Distress" or "Mixed (carries all)" for bearer-level Serials)
+  Volume      — qualitative bandwidth / cadence
+
+A Serial therefore carries:
+  - a topology badge (S2H, S2S, SUB2A, …) — the WHO dimension shorthand
+  - a name describing the operational purpose (NOT the equipment)
+  - an `ier:{who,what,when,protection,precedence,volume}` record (EN/ES)
+  - `typicalEquip / typicalFreq / typicalStanag` — the technical SOLUTION
+    that satisfies the IER (the radio/SATCOM/TDL chosen)
+  - `attackSurface` text and `lpiBase` (0..5) for the EW posture
+
+A Use Case picks which IERs (Serials) are required for the mission.
+Per (UC × IER) the renderer produces a key-value block where the LEFT column
+is the variable name and the RIGHT column the value. See PER-USE-CASE CARD.
+
+
+DOCTRINAL / STANDARDS BASIS
+---------------------------
+- MC 195/12 — ATO Minimum Common Ship-Fitting Standards for Radio
+  Communication Equipment (gated behind NATO Archives' captcha; content
+  extrapolated from public sources — Leonardo Naval RADIOS catalogue,
+  ACP-176, FMN Spiral 4 maritime profile, AJP-3.1 / AJP-6).
+- AJP-3.1 Edition B — Allied Joint Doctrine for Maritime Operations
+  (every UC's "doctrinal hook" cites §3 / §4 / §5 / §6).
+- AJP-3.6 — Allied Joint Doctrine for EW (LPI / LPD definitions; applied
+  operationally per AJP-3.1).
+- AJP-6 Edition B — Allied Joint Doctrine for CIS (resilience,
+  interoperability, availability; IER framework).
+- AC/322-D(2024)0053 — NISP Baseline 16; PFL-00404 = Maritime C2
+  Information Exchange Profile (FMN Spiral 5).
+- STANAG 4711 — Standards Profile for FMN Spiral 4.
+- AP-06 / AP-15 — NATO Glossary of Terms / Glossary of Allied Joint
+  Publications (terminology must follow these).
+- ACP-176 NATO SUPP-2 — NATO Naval & Maritime Air Radio Organization.
+- APP-7(D) — Joint Brevity Words. APP-11 — NATO Message Text Formats.
+- STANAG 5066 / 4538 (HF), 5511 / 5516 / 5522 (TDLs Link 11 / 16 / 22),
+  4193 (IFF Mode 5), 4231 (UHF DAMA SATCOM), 1074 (acoustic comms),
+  4586 (UAV), 4204 / 4205 / 4246 (V/UHF tactical, HAVE QUICK).
+- IMO SOLAS Ch. IV (GMDSS), Cospas-Sarsat T.001, ITU-R M.1371 (AIS).
+
+
+SELF-CONTAINMENT — SINGLE INLINED FILE
+--------------------------------------
+**Hard requirement: the deliverable is ONE `.html` file. No sibling assets
+folder, no CDN references, nothing fetched at runtime.** Open from disk on a
+fully air-gapped machine and it must render identically.
+
+What is inlined inside the single file:
+
+1. **Tailwind v3.4.16 runtime** (~440 KB) inside an inline `<script>…</script>`
+   in `<head>`. Source: `https://cdn.tailwindcss.com/3.4.16` (Chrome
+   User-Agent at build time).
+
+2. **Lucide icons UMD** (~390 KB) inside an inline `<script>…</script>` in
+   `<head>`. Source: `https://unpkg.com/lucide@latest/dist/umd/lucide.min.js`.
+
+3. **Outfit + JetBrains Mono fonts** — fetch the Google Fonts CSS for both
+   families with a Chrome User-Agent (returns woff2-subset URLs). Keep ONLY
+   the `latin` and `latin-ext` blocks (drop cyrillic, greek, vietnamese, …).
+   Download each referenced `.woff2`, base64-encode it, rewrite the
+   `src: url(…)` of every `@font-face` to a `data:font/woff2;base64,…` URI.
+   Paste the resulting CSS inside an inline `<style>` block in `<head>`.
+   Final inlined font payload is ~120 KB across 4 variable-font files (one
+   latin + one latin-ext per family — variable fonts share one file across
+   all weights).
+
+Pre-flight: grep for `</script>` and `</style>` inside the asset text. If
+either appears, the inline wrapper would close prematurely. Tailwind 3.4.16
+and Lucide UMD are both clean; if a future version is not, escape the
+offending sequences.
+
+Expected final HTML size: ~1.3-1.4 MB.
+
+Build hint (PowerShell on Windows):
+```
+$tw  = [IO.File]::ReadAllText("tailwind.js")
+$lu  = [IO.File]::ReadAllText("lucide.min.js")
+$css = [IO.File]::ReadAllText("fonts.css")
+Get-ChildItem "fonts/*.woff2" | ForEach-Object {
+  $rel = "fonts/" + $_.Name
+  $b64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($_.FullName))
+  $css = $css.Replace($rel, "data:font/woff2;base64,$b64")
+}
+# Then string-replace the three asset references in the HTML template.
+```
+
+
+VISUAL DESIGN
+-------------
+Theme: dark NATO maritime command-centre aesthetic.
+
+CSS variables:
+  --nato-blue: #004990
+  --nato-blue-dark: #00264d
+  --accent-gold: #fbbf24
+  --accent-cyan: #22d3ee
+  --accent-red: #f87171
+  --accent-green: #4ade80
+  --accent-amber: #f59e0b
+  --accent-violet: #a78bfa
+  --bg-dark: #020617
+  --glass: rgba(15,23,42,0.92)
+  --glass-light: rgba(30,41,59,0.6)
+  --border-soft: rgba(148,163,184,0.18)
+
+Typography: body `Outfit`; mono `JetBrains Mono`.
+
+Background: dark, with three soft radial gradients (gold, cyan, NATO blue)
+and `background-attachment: fixed`.
+
+Top "flag bar" inside the header: a 3 px linear gradient — left half NATO
+blue, right half NATO gold.
+
+Primitive patterns:
+  .glass-card    — `background:var(--glass); backdrop-filter:blur(20px);
+                   border:1px solid var(--border-soft); border-radius:20px;`
+  .glass-soft    — lighter variant (used in left aside)
+  .serial-pill   — gold-tinted, used for `S1`..`S12`
+  .uc-pill       — cyan-tinted, used for `UC001`..`UC010`
+  .topo-pill     — violet-tinted, mono font, used for topology codes
+                   (`S2H`, `S2S`, `SUB2A`, …)
+  .prec-tag      — small gold pill for precedence labels
+                   (Flash / Immediate / Priority / Routine / …)
+
+
+CLASSIFICATION COLOUR PALETTE  (mandatory)
+------------------------------------------
+Background a soft tint (`rgba(...,0.12)`); border + text use the bright hex.
+Padding `1px 7px`, border-radius `5px`, font-weight 700, font-size `0.62rem`,
+letter-spacing `0.06em`.
+
+| Code | Meaning             | Text       | Border     |
+|------|---------------------|------------|------------|
+| NU   | NATO Unclassified   | `#22c55e`  | `#16a34a`  | (green)
+| NR   | NATO Restricted     | `#3b82f6`  | `#2563eb`  | (blue)
+| NS   | NATO Secret         | `#ef4444`  | `#dc2626`  | (red)
+| MS   | Mission Secret      | `#d946ef`  | `#c026d3`  | (magenta/purple)
+
+NU / NR / NS hexes follow the AstroUXDS / Pantone Standard-Form palette used
+by US/NATO classification banners. **Mission Secret has no canonical NATO
+colour**; magenta is the community / FMN / Afghanistan-Mission-Network
+convention chosen to keep MS in the high-classification visual family while
+distinguishing it from NS. Document this rationale in a CSS comment above
+the rules.
+
+
+PAGE STRUCTURE
+--------------
+1. Header (glass card with flag bar):
+   - NATO anchor icon (Lucide `anchor`) inside a gold-bordered blue square
+   - Tag line ("NATO • Maritime CIS • FMN Spiral 4 • v002")
+   - Title "Maritime Communications — Use Case × Link-Serial Matrix"
+   - Subtitle (mono): "Serials = link topologies (S2H / S2S / SUB2A …) —
+     MC 195/12 (extrapolated) · AJP-3.1 / AJP-6 / STANAG 4711"
+   - Buttons (right-aligned, wrap on mobile):
+     * **ASCII Table → Excel / Word** — primary, solid gold gradient
+       (`btn-solid-gold`), Lucide `table-2` icon
+     * Language toggle (gold outline, Lucide `languages`)
+     * Export CSV (cyan outline, Lucide `file-spreadsheet`)
+     * Copy Matrix (cyan outline, Lucide `copy`)
+
+2. Toolbar / stats row (4-column grid on lg):
+   - Left card "Combinatorial Counters": Use Cases / Link-Serials / UC×S
+     Rows / Shown (filtered) — values populated dynamically.
+   - Right card "Filters" (3 row groups): Environment, Classification,
+     Link-Serials. Each is a `.chip` row that toggles inclusion.
+
+3. Main two-column layout (12-col grid on lg):
+   - Left aside (4 cols on lg, 3 on xl):
+     * Card "Link-Serials — Topologies": one mini-card per Serial showing
+       `serial-pill`, `topo-pill`, name, description, typicalEquip,
+       typicalFreq.
+     * Card "Use Cases (jump)": clickable items that smooth-scroll to the
+       corresponding UC card.
+     * Card "Legend": classification tag legend + risk-dot help.
+   - Right column (8 / 9 cols): one `.uc-card` per Use Case (see below).
+
+4. Footer: glass card listing References (two-column grid, mono).
+
+5. ASCII Modal (hidden by default):
+   - Full-screen overlay (`rgba(2,6,23,0.88)` + 10 px blur, z-index 100).
+   - Centred `.modal-card` (max-width 1500 px, max-height 92vh, flex column).
+   - Header bar with title and controls:
+     * `.fmt-toggle` segmented control: TSV (Excel) | ASCII Grid (Word)
+     * Copy button (solid gold)
+     * Download `.txt` button (cyan outline)
+     * Close button (icon-btn, Lucide `x`)
+   - Body: `<pre id="ascii-preview">` in JetBrains Mono ~0.70 rem, white-
+     space pre, scrollable in both axes, dark background.
+   - ESC and backdrop click both close the modal.
+
+
+PER-USE-CASE CARD
+-----------------
+For every UC visible after filters:
+
+- Header row: `uc-pill` (`UC001`..`UC010`), title, classification tag,
+  environment dot (Friend / Not Friend / Mixed), criticality `n/3`, count of
+  visible serials, per-UC copy button.
+
+- Doctrinal box: gold left border, gold mini-section-label "AJP-3.1
+  doctrinal hook" + the UC's `doctrine[lang]` paragraph.
+
+- **Serial grid (variable-left / value-right layout)**: an auto-fit CSS grid
+  (`repeat(auto-fit, minmax(360px, 1fr))`) that lays one block per
+  applicable Serial. Each block contains:
+    * Header strip: `serial-pill` (Sx) + `topo-pill` + serial name
+    * 2-column `.kv-table`: LEFT column = variable name (uppercase, cyan,
+      ~38% width); RIGHT column = value for that (UC × Serial / IER).
+
+  Row order inside every block (14 rows — 6 IER + 8 context):
+     1. IER · Who          — origin → destination (Serial)
+     2. IER · What         — content & format (Serial spec + UC narrative
+                             appended after a `·`)
+     3. IER · When         — latency / cadence (Serial default + UC tempo
+                             appended after a `·`)
+     4. IER · Protection   — `<UC.classification> — <crypto-and-integrity
+                             posture>`; mission classification overrides the
+                             IER's notional default
+     5. IER · Precedence   — Flash / Immediate / Priority / Routine /
+                             Distress / Mixed (carries all) — rendered as
+                             a small gold `.prec-tag`
+     6. IER · Volume       — qualitative bandwidth / cadence (Serial)
+     7. Frequencies / Equipment   — typicalEquip / typicalFreq / typicalStanag,
+                                    multi-line, smaller mono on lines 2-3
+     8. Time Window
+     9. Environment        — coloured dot (env-Friend / env-NotFriend /
+                             env-Mixed)
+    10. Zones, CoI
+    11. Availability       — High (24/7) / Medium (mission) / Best-effort
+    12. Classification     — `.cls-tag` of UC's classification
+    13. Risk (LPI/LPD)     — five-dot meter + `n/5` + label (LPI+LPD / LPI /
+                             None) AND a one-sentence narrative below the
+                             dots, drawn from a 6-element `RISK_NARR.{en,es}`
+                             array indexed by `lpi`
+    14. Attack Surface
+
+  Rationale: the previous wide `<table>` with one row per Serial was hard to
+  scan once columns multiplied; pivoting to "variable on the left, value on
+  the right" inside one block per Serial (= one IER) gives a clean
+  operator-readable card. Several blocks per UC sit side-by-side on wide
+  screens and stack on mobile.
+
+
+COMBINATORIAL GENERATOR  (`generateRow(uc, s)`)
+-----------------------------------------------
+Pure function returning an object consumed by both the DOM render and the
+ASCII / TSV / CSV builders.
+
+Time window:
+  timeWindow = uc.tempo[lang] with these per-Serial overrides:
+    S6  → "VLF/ELF rx continuous + PD burst slots"  /  Spanish equivalent
+    S4  → "Burst at PD (<5 s) + acoustic CW"        /  Spanish
+    S8  → "Scheduled broadcast windows"              /  Spanish
+    S10 → "Boarding window (30-90 min)"              /  Spanish
+    S12 in UC007 (SAR) → "Continuous · GMDSS 24/7 watch" / Spanish
+
+IER assembly:
+```
+PROT_BY_CLS = {
+  NU: "Plain (civilian-grade) or basic auth",
+  NR: "Crypto-authenticated (NR)",
+  NS: "Crypto-authenticated, integrity-critical (NS)",
+  MS: "Crypto-authenticated + non-repudiation (MS)"
+}
+ier = {
+  who:        serial.ier.who[lang],
+  what:       serial.ier.what[lang]  + " · " + uc.ierBase[lang],
+  when:       serial.ier.when[lang]  + " · " + uc.tempo[lang],
+  protection: uc.classification + " — " + PROT_BY_CLS[uc.classification][lang],
+  precedence: serial.ier.precedence,
+  volume:     serial.ier.volume[lang]
+}
+```
+Mission classification overrides the IER's notional default. Precedence
+comes from the IER (Serial). What/When are concatenations: the IER's
+default plus the UC's narrative / tempo.
+
+Availability scoring:
+```
+baseAvail per Serial =
+   S1:3, S2:2, S3:2, S4:1, S5:1, S6:2,
+   S7:2, S8:3, S9:2, S10:2, S11:2, S12:3
+score = min(3, round((baseAvail + uc.criticality) / 2))
+3 → "High (24/7)", 2 → "Medium (mission)", 1 → "Best-effort"
+```
+
+LPI/LPD scoring + narrative:
+```
+lpi = serial.lpiBase
+if uc.threat === "Friend"  → lpi = min(5, lpi + 1)
+if uc.code   === "UC009"   → lpi = min(5, lpi + 1)
+riskLabel = lpi >= 4 ? "LPI+LPD" : lpi >= 2 ? "LPI" : "None"
+```
+Narrative scale (must exist EN + ES, indexed 0..5):
+  0 — "Open emission — high intercept risk; intelligible to any nearby SDR."
+  1 — "Low resilience — short-range interception likely; minimal anti-jam."
+  2 — "LPI features — intercept feasible by a capable adversary with DF."
+  3 — "LPI hardened — intercept difficult; geolocation/DF still possible."
+  4 — "LPI + LPD — intercept and detection both unlikely without close access."
+  5 — "Stealth-grade — covert; compatible with EMCON Alpha and protected SATCOM."
+
+Return shape (used by render + exports):
+```
+{
+  serialCode, topo, serialName,
+  freq:       <html with typicalEquip / typicalFreq / typicalStanag>,
+  timeWindow,
+  env, envKey,
+  zones,
+  ier:        {who,what,when,protection,precedence,volume},
+  availability,
+  classification,
+  risk,       riskLabel,  riskNarrative,
+  attackSurface,
+  // Plain-text variants for ASCII export:
+  plainFreq:  `${typicalEquip} | ${typicalFreq} | ${typicalStanag}`,
+  plainRisk:  `${risk}/5 ${riskLabel} — ${riskNarrative}`,
+  plainIer:   `Who: … | What: … | When: … | Protection: … | Precedence: … | Volume: …`
+}
+```
+
+
+FILTERS
+-------
+Three independent inclusion sets, all active by default, controlled by
+`.chip` toggles. UCs and rows are filtered by:
+- `FILTERS.env` ⊆ {Friend, NotFriend, Mixed} — applied at UC level
+- `FILTERS.cls` ⊆ {NU, NR, NS, MS}           — applied at UC level
+- `FILTERS.serials` ⊆ {S1..S12}              — applied at row level
+A UC is hidden entirely if it loses every visible serial. Counters update
+on every render.
+
+
+EN ⇄ ES TOGGLE
+--------------
+- All user-facing labels live in `I18N[lang]` (keyed `data-i18n` on DOM
+  nodes).
+- All Serial.{name,desc,attackSurface,ier.{who,what,when,protection,volume}}
+  and UC.{title,doctrine,tempo,zones,ierBase} have `{en, es}` shapes.
+- Toggling re-renders the aside, TOC, filters, all UC cards, the ASCII
+  modal (if open), and updates `<html lang>`.
+
+
+ASCII / TSV / CSV BUILDERS
+--------------------------
+Headers (18 columns):
+  UC | Serial (IER) | Topo | IER · Who | IER · What | IER · When |
+  IER · Protection | IER · Precedence | IER · Volume / Cadence |
+  Frequencies / Equipment | Time Window | Environment | Zones, CoI |
+  Availability | Class. | LPI/LPD | LPI/LPD narrative | Attack Surface
+
+`buildMatrixRows()` walks USE_CASES → applicable serials (post-filter) and
+produces rows where:
+- "UC" column is `${uc.code} ${uc.title[lang]}`
+- "Serial (IER)" column is `${s.code} ${s.name[lang]}`
+- "Frequencies/Equipment" is the plain string
+  `${typicalEquip} | ${typicalFreq} | ${typicalStanag}`
+- "LPI/LPD" is `${n}/5 ${label}` and "LPI/LPD narrative" is the sentence
+  from `RISK_NARR[lang][lpi]`
+- Every cell is run through `stripHtml()` (replace `<br>` with `· `, drop
+  other tags, collapse whitespace)
+
+`buildTsv()` joins columns with TAB, rows with `\n`. Excel paste must split
+straight into columns; absolutely no tabs inside cells (replace any with
+spaces).
+
+`buildGrid()` (Word-friendly ASCII grid):
+- Per-column wrap caps (chars), in column order:
+  `[28, 24, 6, 28, 36, 24, 24, 14, 24, 32, 22, 12, 24, 14, 6, 10, 36, 32]`
+- `wrapText(text, width)`: greedy whitespace wrap; hard-break tokens longer
+  than the cap. Returns `['']` for empty.
+- Compute final per-column widths from the wrapped data (max line length).
+- Border line: `'+' + widths.map(w => '-'.repeat(w+2)).join('+') + '+'`
+- Header separator uses `=` instead of `-` for emphasis (replaces only the
+  first separator after the header row).
+- Every cell rendered as `'| ' + line.padEnd(width) + ' '` joined by ` | `,
+  closed by ` |`. Multi-line cells emit one text row per wrapped line.
+- Prepend a 4-line caption:
+  ```
+  NATO MARITIME COMMUNICATIONS — <hdrTitle>
+  Generated <ISO 19> · lang=<lang> · rows=<n>
+  Filters: env={..} cls={..} serials={..}
+  <blank>
+  ```
+
+CSV: same matrix rows; values quoted with `"…"` only when they contain `,`,
+`;`, `"` or newline (escape `"` as `""`). Separator `;`. Prepend UTF-8 BOM
+(`﻿`). File name:
+`MaritimeCommunications_v002_UCxLink_<lang>.csv`.
+
+
+CLIPBOARD INTERACTIONS
+----------------------
+- Top-bar **Copy Matrix** → TSV of all visible rows.
+- Per-UC **copy** button → that UC's header + a TSV table for that UC only
+  (same 17 data columns, minus the leading "UC" column since the header
+  carries it).
+- Modal **Copy** → currently selected format (TSV or ASCII grid).
+- All show a transient gold toast at the bottom centre.
+
+
+I18N KEYS  (must exist for both en and es)
+------------------------------------------
+hdrTag, hdrTitle, hdrSub, asciiBtn, csvBtn, copyBtn,
+statsTitle, statUC, statS, statRows, statShown,
+filterTitle, filterEnv, filterCls, filterSerial,
+serialsTitle, serialsHelp, tocTitle, legendTitle, riskHelp, refsTitle,
+colSerial, colFreq, colTime, colEnv, colZones, colIer,
+colAvail, colCls, colRisk, colAtk,
+ierWho, ierWhat, ierWhen, ierProtection, ierPrecedence, ierVolume,
+doctrineLbl,
+toastCopied, toastCsv, toastTxt,
+langBtn, envFriend, envNotFriend, envMixed,
+availHigh, availMed, availBest,
+modalTag, modalTitle, fmtTsv, fmtGrid, modalCopy, modalDownload
+
+
+================================================================================
+DATA — SERIALS / IERs  (12 entries; reproduce verbatim, both languages)
+================================================================================
+Each Serial below carries the full `ier:{who,what,when,protection,precedence,
+volume}` record plus the technical solution (typicalEquip / typicalFreq /
+typicalStanag), attackSurface, and lpiBase. Values are canonical — copy
+verbatim, do not paraphrase. Spanish equivalents must accompany every EN
+field except `precedence` (single string).
+
+────────────────────────────────────────────────────────────────────────────────
+S1   topo=S2H   icon=anchor
+   name        en: "Operational reporting to MARCOM HQ"
+               es: "Reporte operacional al CG MARCOM"
+   desc        en: "Surface unit reporting to operational HQ (MARCOM, CTF)."
+               es: "Unidad de superficie reporta al CG operacional (MARCOM, CTF)."
+   ier.who     en: "Surface unit → MARCOM operational HQ"
+               es: "Unidad de superficie → CG operacional MARCOM"
+   ier.what    en: "SITREP / position / INTREP (formal MTF text + occasional attachments)"
+               es: "SITREP / posición / INTREP (texto MTF formal + adjuntos puntuales)"
+   ier.when    en: "Routine burst every ~30 min; immediate on event"
+               es: "Burst rutinario cada ~30 min; inmediato por evento"
+   ier.protection  en: "Crypto-authenticated, integrity-critical"
+                   es: "Crypto-autenticado, integridad crítica"
+   ier.precedence: "Priority"
+   ier.volume  en: "~1-50 KB per burst; occasional MB attachments"
+               es: "~1-50 KB por burst; adjuntos MB puntuales"
+   typicalEquip:  "HF (BLOS) · SHF X-band SATCOM · EHF AEHF"
+   typicalFreq:   "3-30 MHz · 7.25-8.4 GHz · 20/44 GHz"
+   typicalStanag: "STANAG 5066/4538 · NSP4 · AEHF XDR"
+   attackSurface en: "Wideband HF SIGINT/DF · uplink jam · ground-station intrusion."
+                 es: "SIGINT/DF HF · jamming uplink · intrusión en estación terrena."
+   lpiBase: 2
+
+S2   topo=S2S   icon=arrow-left-right
+   name        en: "Tactical peer exchange (surface, LOS)"
+               es: "Intercambio táctico peer (superficie, LOS)"
+   desc        en: "Tactical voice and TDL between surface units within line-of-sight."
+               es: "Voz táctica y TDL entre unidades de superficie en LOS."
+   ier.who     en: "Surface unit ↔ Surface unit (peer, task group)"
+               es: "Unidad superficie ↔ Unidad superficie (peer, grupo de tareas)"
+   ier.what    en: "Voice + tactical tracks (J-series / F-series)"
+               es: "Voz + pistas tácticas (J-series / F-series)"
+   ier.when    en: "Voice continuous; tracks ≤ 5 s"
+               es: "Voz continua; pistas ≤ 5 s"
+   ier.protection en: "Crypto-authenticated, anti-spoof"
+                  es: "Crypto-autenticado, anti-spoof"
+   ier.precedence: "Immediate"
+   ier.volume  en: "Voice 16-32 kbps continuous; tracks low-rate continuous"
+               es: "Voz 16-32 kbps continua; pistas baja tasa continua"
+   typicalEquip:  "V/UHF voice · Link 16 · Link 22"
+   typicalFreq:   "30-400 MHz · 960-1215 MHz · HF/UHF (L22)"
+   typicalStanag: "STANAG 4204/4246 · 5516 · 5522"
+   attackSurface en: "LOS jamming · TRANSEC compromise · slot-reassignment attacks."
+                 es: "Jamming LOS · compromiso TRANSEC · ataques a reasignación de slot."
+   lpiBase: 3
+
+S3   topo=S2A   icon=plane
+   name        en: "Ship-Air engagement coordination"
+               es: "Coordinación de empeño Buque-Aire"
+   desc        en: "Organic and embarked aviation; airborne early warning relay."
+               es: "Aviación orgánica y embarcada; relay AEW."
+   ier.who     en: "Surface unit ↔ Air asset (helo / MPA / fighter)"
+               es: "Unidad superficie ↔ Aeronave (helo / MPA / caza)"
+   ier.what    en: "Voice + Link 16 tracks + IFF Mode 5 interrogation"
+               es: "Voz + pistas Link 16 + interrogación IFF Modo 5"
+   ier.when    en: "≤ 1 s engagement; voice continuous"
+               es: "≤ 1 s empeño; voz continua"
+   ier.protection en: "Crypto-authenticated, anti-spoof, TRANSEC"
+                  es: "Crypto-autenticado, anti-spoof, TRANSEC"
+   ier.precedence: "Flash"
+   ier.volume  en: "Voice 16 kbps + tracks low kbps"
+               es: "Voz 16 kbps + pistas pocos kbps"
+   typicalEquip:  "UHF voice (HAVE QUICK) · Link 16 · IFF Mode 5"
+   typicalFreq:   "225-400 MHz · 960-1215 MHz · 1030/1090 MHz"
+   typicalStanag: "STANAG 4246 · 5516 · 4193"
+   attackSurface en: "Hop-sequence prediction · Mode 5 replay · J-message spoof."
+                 es: "Predicción de hopping · replay Modo 5 · spoofing J."
+   lpiBase: 3
+
+S4   topo=SUB2S  icon=life-buoy
+   name        en: "Submerged contact report to TG"
+               es: "Reporte de contacto sumergido al GT"
+   desc        en: "Periscope-depth burst transmissions or covert acoustic comms."
+               es: "Burst a cota periscopio o comms acústicas encubiertas."
+   ier.who     en: "Submarine (PD/burst) → Surface unit (task group)"
+               es: "Submarino (PD/burst) → Unidad superficie (grupo)"
+   ier.what    en: "Position report, contact report, brief acks"
+               es: "Reporte de posición, reporte de contacto, acuses breves"
+   ier.when    en: "Burst < 5 s on event; acoustic CW slow"
+               es: "Burst < 5 s por evento; CW acústico lento"
+   ier.protection en: "Crypto-authenticated, emission-controlled"
+                  es: "Crypto-autenticado, emisión controlada"
+   ier.precedence: "Immediate"
+   ier.volume  en: "1-10 KB per burst; bps via acoustic"
+               es: "1-10 KB por burst; bps por acústica"
+   typicalEquip:  "HF burst at PD · UHF SATCOM at PD · acoustic modem"
+   typicalFreq:   "3-30 MHz (burst) · 240-318 MHz · 1-50 kHz acoustic"
+   typicalStanag: "STANAG 5066 (burst) · 1074 (acoustic) · CSD (buoy)"
+   attackSurface en: "Burst-emission DF · acoustic interception by towed array."
+                 es: "DF de emisión burst · interceptación acústica por array remolcado."
+   lpiBase: 5
+
+S5   topo=SUB2A  icon=plane-takeoff
+   name        en: "Sub→MPA covert datum exchange"
+               es: "Datum encubierto Sub→MPA"
+   desc        en: "Sonobuoy uplink or expendable buoy to overhead Maritime Patrol Aircraft."
+               es: "Uplink sonoboya o boya desechable a MPA en cubierta."
+   ier.who     en: "Submarine (buoy / sonobuoy) → MPA on station"
+               es: "Submarino (boya / sonoboya) → MPA en estación"
+   ier.what    en: "ASW datum, contact info, brief reports"
+               es: "Datum ASW, info de contacto, reportes breves"
+   ier.when    en: "Buoy lifetime hours; bursts as scheduled"
+               es: "Vida útil de boya horas; bursts programados"
+   ier.protection en: "Crypto-authenticated, single-use buoy key"
+                  es: "Crypto-autenticado, clave única de boya"
+   ier.precedence: "Immediate"
+   ier.volume  en: "Small bursts (~KB)"
+               es: "Bursts pequeños (~KB)"
+   typicalEquip:  "Expendable buoy V/UHF · CSD slow-data buoy"
+   typicalFreq:   "VHF 138-156 MHz buoy uplink · UHF 225-400 MHz"
+   typicalStanag: "CSD specification · STANAG 4392 (sonobuoy)"
+   attackSurface en: "Buoy geolocation post-deploy · short-window EW."
+                 es: "Geolocalización de boya tras despliegue · EW de ventana corta."
+   lpiBase: 4
+
+S6   topo=SUB2H  icon=radio-tower
+   name        en: "Submerged broadcast reception (NSB)"
+               es: "Recepción de difusión submarina (NSB)"
+   desc        en: "VLF/ELF receive-only broadcast plus PD burst when permitted."
+               es: "Recepción VLF/ELF más burst a cota periscopio cuando se permite."
+   ier.who     en: "Submarine (VLF/ELF rx) → SUBOPAUTH"
+               es: "Submarino (rx VLF/ELF) → Autoridad Operacional Sub (SUBOPAUTH)"
+   ier.what    en: "Fleet broadcast (orders, INTSUM, key material); PD ack"
+               es: "Difusión a la flota (órdenes, INTSUM, claves); ack en PD"
+   ier.when    en: "Continuous rx; burst ack only on PD slots"
+               es: "Rx continua; burst ack solo en slots PD"
+   ier.protection en: "Crypto-authenticated, broadcast key chain"
+                  es: "Crypto-autenticado, cadena de claves de difusión"
+   ier.precedence: "Flash"
+   ier.volume  en: "Broadcast bps low; ack bursts KB"
+               es: "Difusión bps baja; ack bursts KB"
+   typicalEquip:  "VLF/ELF rx · HF burst at PD · UHF SATCOM at PD"
+   typicalFreq:   "30-300 Hz (ELF rx) · 3-30 kHz (VLF rx) · 3-30 MHz (burst)"
+   typicalStanag: "NATO Submarine Broadcast (NSB) · STANAG 5066 burst"
+   attackSurface en: "Antenna emission window · PD silhouette exposure."
+                 es: "Ventana de emisión de antena · exposición de silueta a cota."
+   lpiBase: 5
+
+S7   topo=A2H    icon=satellite
+   name        en: "Airborne ISR relay to HQ"
+               es: "Relay ISR aéreo al CG"
+   desc        en: "Airborne node forwards organic and relayed tracks to shore HQ."
+               es: "Nodo aéreo reenvía pistas orgánicas y reenviadas al CG en costa."
+   ier.who     en: "Air asset → MARCOM HQ via SATCOM relay"
+               es: "Aeronave → CG MARCOM vía relay SATCOM"
+   ier.what    en: "Forwarded tracks, sensor feeds, organic ISR"
+               es: "Pistas reenviadas, feeds de sensor, ISR orgánica"
+   ier.when    en: "Continuous relay; bursty MB-class video"
+               es: "Relay continuo; vídeo burst clase MB"
+   ier.protection en: "Crypto-authenticated, end-to-end"
+                  es: "Crypto-autenticado, extremo a extremo"
+   ier.precedence: "Immediate"
+   ier.volume  en: "kbps tracks + MB-class video bursts"
+               es: "Pistas kbps + vídeo burst clase MB"
+   typicalEquip:  "UHF DAMA SATCOM · X-band wideband SATCOM · Link 16 relay · HF"
+   typicalFreq:   "240-318 MHz · 7.25-8.4 GHz · 960-1215 MHz · 3-30 MHz"
+   typicalStanag: "STANAG 4231 · NSP4 · 5516 · 5066"
+   attackSurface en: "Spot-beam jam · BGP-over-SAT misroute · relay-node interdiction."
+                 es: "Jam de spot beam · misrouting BGP/SAT · interdicción de nodo relay."
+   lpiBase: 2
+
+S8   topo=H2S    icon=megaphone
+   name        en: "FLEET BROADCAST (HQ→Fleet, one-to-many)"
+               es: "FLEET BROADCAST (CG→Flota, uno-a-muchos)"
+   desc        en: "One-way broadcast of orders, INTSUM and re-keying material."
+               es: "Difusión unidireccional de órdenes, INTSUM y material de re-key."
+   ier.who     en: "MARCOM HQ → Fleet (one-to-many)"
+               es: "CG MARCOM → Flota (uno-a-muchos)"
+   ier.what    en: "Strategic orders, INTSUM, ROE updates, re-keying"
+               es: "Órdenes estratégicas, INTSUM, ROE, re-keying"
+   ier.when    en: "Scheduled cycles (15/30 min) + Flash on demand"
+               es: "Ciclos programados (15/30 min) + Flash bajo demanda"
+   ier.protection en: "Crypto-authenticated, broadcast key"
+                  es: "Crypto-autenticado, clave de difusión"
+   ier.precedence: "Flash"
+   ier.volume  en: "kbps continuous; bursts occasional"
+               es: "kbps continuo; bursts puntuales"
+   typicalEquip:  "HF FLEET BROADCAST · UHF SATCOM · EHF protected SATCOM"
+   typicalFreq:   "3-30 MHz · 240-318 MHz · 20/44 GHz"
+   typicalStanag: "NSP4 · AEHF XDR · STANAG 5066"
+   attackSurface en: "Broadcast jamming · false-broadcast injection if auth weak."
+                 es: "Jamming de difusión · inyección si la autenticación es débil."
+   lpiBase: 3
+
+S9   topo=S2SAT  icon=signal
+   name        en: "SATCOM bearer uplink"
+               es: "Uplink portador SATCOM"
+   desc        en: "Bearer-level uplink — bandwidth-on-demand for bigger pipes."
+               es: "Uplink de portadora — ancho de banda bajo demanda."
+   ier.who     en: "Surface unit → SATCOM teleport (bearer level)"
+               es: "Unidad superficie → Estación SATCOM (nivel portador)"
+   ier.what    en: "IP traffic for any application above (RMP, video, files)"
+               es: "Tráfico IP para aplicaciones superiores (RMP, vídeo, ficheros)"
+   ier.when    en: "Continuous when on station; bandwidth-on-demand"
+               es: "Continuo en estación; ancho de banda bajo demanda"
+   ier.protection en: "Bulk crypto + per-flow auth"
+                  es: "Cripto bulk + auth por flujo"
+   ier.precedence: "Mixed (carries all)"
+   ier.volume  en: "64 kbps – 8 Mbps depending on bearer"
+               es: "64 kbps – 8 Mbps según portadora"
+   typicalEquip:  "UHF DAMA · SHF X-band · EHF (XDR/XDR+)"
+   typicalFreq:   "240-318 MHz · 7.25-8.4 GHz · 44 GHz"
+   typicalStanag: "STANAG 4231 · NSP4 · AEHF XDR"
+   attackSurface en: "Uplink jam · transponder hijack · terminal-side crypto loss."
+                 es: "Jam de uplink · secuestro de transpondedor · pérdida cripto en terminal."
+   lpiBase: 3
+
+S10  topo=BOARD  icon=users
+   name        en: "Boarding-team to mothership tactical"
+               es: "Táctico equipo de visita ↔ buque madre"
+   desc        en: "Tactical voice/data with team aboard a contact of interest."
+               es: "Voz/datos tácticos con equipo a bordo del contacto de interés."
+   ier.who     en: "Boarding team → Mothership CIC"
+               es: "Equipo de visita → CIC del buque madre"
+   ier.what    en: "Voice + still imagery + identity query"
+               es: "Voz + imágenes fijas + consulta de identidad"
+   ier.when    en: "Continuous voice during boarding window"
+               es: "Voz continua durante la visita"
+   ier.protection en: "Crypto-authenticated CNR (tactical)"
+                  es: "CNR crypto-autenticado (táctico)"
+   ier.precedence: "Priority (Immediate on threat escalation)"
+   ier.volume  en: "Voice 16 kbps + occasional KB images"
+               es: "Voz 16 kbps + imágenes KB ocasionales"
+   typicalEquip:  "V/UHF tactical handheld (FH) · SINCGARS · HAVE QUICK II"
+   typicalFreq:   "30-88 MHz · 225-400 MHz"
+   typicalStanag: "STANAG 4204/4205 · 4246 · SINCGARS ESIP"
+   attackSurface en: "COMSEC capture if team compromised · short-range RF intercept."
+                 es: "Captura COMSEC si se compromete el equipo · intercepción RF a corta distancia."
+   lpiBase: 1
+
+S11  topo=UV2S   icon=plane
+   name        en: "Unmanned ISR feed to mothership"
+               es: "Feed ISR no tripulado al buque madre"
+   desc        en: "Unmanned platforms returning ISR feed and telemetry to mothership."
+               es: "Plataformas no tripuladas devuelven ISR y telemetría al buque."
+   ier.who     en: "UAV / USV / UUV → Mothership control station"
+               es: "UAV / USV / UUV → Estación de control del buque madre"
+   ier.what    en: "ISR feed (video/imagery), telemetry, control acks"
+               es: "Feed ISR (vídeo/imagen), telemetría, acks de control"
+   ier.when    en: "Continuous during sortie"
+               es: "Continuo durante la misión"
+   ier.protection en: "CDL crypto · STANAG 4586 mission key"
+                  es: "Cripto CDL · clave de misión STANAG 4586"
+   ier.precedence: "Immediate"
+   ier.volume  en: "Video Mbps + telemetry kbps"
+               es: "Vídeo Mbps + telemetría kbps"
+   typicalEquip:  "Common Data Link (CDL Ku/Ka) · UHF · acoustic (UUV)"
+   typicalFreq:   "14-15 GHz / 30-31 GHz · 225-400 MHz · 1-50 kHz acoustic"
+   typicalStanag: "STANAG 4586 · CDL · STANAG 1074"
+   attackSurface en: "CDL link jam/spoof · UUV acoustic spoof · GPS denial."
+                 es: "Jam/spoof del CDL · spoof acústico UUV · denegación GPS."
+   lpiBase: 3
+
+S12  topo=S2CIV  icon=hand-helping
+   name        en: "Civil-Military coordination (NCAGS / SAR / AIS)"
+               es: "Coordinación Civil-Militar (NCAGS / SAR / AIS)"
+   desc        en: "Coordination with merchant shipping, MRCC and partner agencies."
+               es: "Coordinación con mercante, MRCC y agencias socias."
+   ier.who     en: "Surface unit ↔ MRCC / merchant vessel / partner agency"
+               es: "Unidad superficie ↔ MRCC / buque mercante / agencia socia"
+   ier.what    en: "Voice, AIS reports, GMDSS distress, NCAGS coordination"
+               es: "Voz, reportes AIS, socorro GMDSS, coordinación NCAGS"
+   ier.when    en: "Continuous monitoring; immediate for distress"
+               es: "Monitorización continua; inmediato en socorro"
+   ier.protection en: "Plain (civilian-grade) or authenticated"
+                  es: "Plano (civil) o autenticado"
+   ier.precedence: "Distress (Flash) · else Routine"
+   ier.volume  en: "Voice 16 kbps + AIS bps; distress small"
+               es: "Voz 16 kbps + AIS bps; socorro pequeño"
+   typicalEquip:  "VHF Marine · GMDSS DSC · INMARSAT C/Fleet · AIS"
+   typicalFreq:   "156-174 MHz · 406 MHz · 1.5/1.6 GHz · 161.975/162.025 MHz"
+   typicalStanag: "IMO SOLAS Ch. IV · ITU-R M.1371 · Cospas-Sarsat T.001"
+   attackSurface en: "AIS spoof · DSC false alert · open-source SDR intercept."
+                 es: "Spoofing AIS · alerta DSC falsa · intercepción SDR civil."
+   lpiBase: 0
+
+
+================================================================================
+DATA — USE CASES  (10 entries; reproduce verbatim, both languages)
+================================================================================
+
+UC001  Anti-Air Warfare (AAW) — Layered Air Defence
+       threat=NotFriend  classification=NS  criticality=3
+       title       en: "Anti-Air Warfare (AAW) — Layered Air Defence"
+                   es: "Guerra Antiaérea (AAW) — Defensa por Capas"
+       tempo       en: "Continuous, sub-second tracks"
+                   es: "Continuo, pistas sub-segundo"
+       zones       en: "CSG AOR · CoI: AAWC, FAAWC, AEW"
+                   es: "AOR del Grupo Aeronaval · CoI: AAWC, FAAWC, AEW"
+       ierBase     en: "Engagement-quality tracks · Weapons-free authority · Engagement orders"
+                   es: "Pistas de calidad de empeño · Autoridad weapons-free · Órdenes de empeño"
+       doctrine    en: "AJP-3.1 §4. Layered defence with AEW, fighters and surface launchers; CIS must guarantee deterministic latency for engagement-quality tracks."
+                   es: "AJP-3.1 §4. Defensa por capas con AEW, cazas y lanzadores; CIS con latencia determinista para pistas de calidad de empeño."
+       serials: [S1, S2, S3, S7, S8, S9]
+
+UC002  Anti-Surface Warfare (ASuW) — OTH-T
+       threat=NotFriend  classification=NS  criticality=3
+       title       en: "Anti-Surface Warfare (ASuW) — OTH-T"
+                   es: "Guerra Antisuperficie (ASuW) — OTH-T"
+       tempo       en: "Continuous + scheduled targeting cycles"
+                   es: "Continuo + ciclos de targeting programados"
+       zones       en: "Maritime AOR · CoI: ASuWC, ISR cell"
+                   es: "AOR marítima · CoI: ASuWC, célula ISR"
+       ierBase     en: "OTH-T tracks (RMP) · Strike package · BDA"
+                   es: "Pistas OTH-T (RMP) · Paquete de ataque · BDA"
+       doctrine    en: "AJP-3.1 §4. Surface engagement against high-value units; OTH-T targeting demands resilient track fusion across HF/SATCOM and Link 22."
+                   es: "AJP-3.1 §4. Empeño antisuperficie contra HVU; OTH-T con fusión resiliente HF/SATCOM y Link 22."
+       serials: [S1, S2, S3, S7, S8, S9, S11]
+
+UC003  Anti-Submarine Warfare (ASW)
+       threat=NotFriend  classification=NS  criticality=3
+       title       en: "Anti-Submarine Warfare (ASW)"
+                   es: "Guerra Antisubmarina (ASW)"
+       tempo       en: "Burst on contact + scheduled MEDEVAC slots"
+                   es: "Burst en contacto + slots MEDEVAC programados"
+       zones       en: "ASW screen · CoI: ASWC, MPA Wing"
+                   es: "Pantalla ASW · CoI: ASWC, Ala MPA"
+       ierBase     en: "Sonar contact reports · MAD anomalies · DICASS sonobuoy plots"
+                   es: "Reportes de sonar · Anomalías MAD · Plots DICASS"
+       doctrine    en: "AJP-3.1 §4. Multistatic ASW prosecution with MPA, helo and surface; CIS must move sonar contact reports under EMCON-conscious protocols."
+                   es: "AJP-3.1 §4. Persecución ASW multistática con MPA, helo y superficie; CIS mueve reportes de sonar bajo protocolos sensibles a EMCON."
+       serials: [S2, S3, S4, S5, S6, S7, S11]
+
+UC004  Maritime Interdiction (MIO) — Boarding
+       threat=Mixed  classification=NR  criticality=2
+       title       en: "Maritime Interdiction (MIO) — Boarding"
+                   es: "Interdicción Marítima (MIO) — Visita"
+       tempo       en: "Event-driven (boarding window 30-90 min)"
+                   es: "Por evento (visita 30-90 min)"
+       zones       en: "Choke points · CoI: NCAGS, partner navies, Coast Guard"
+                   es: "Puntos de estrangulamiento · CoI: NCAGS, marinas socias, Guardacostas"
+       ierBase     en: "Vessel ID · Boarding team voice · Evidence imagery"
+                   es: "ID de buque · Voz equipo de visita · Imágenes de evidencia"
+       doctrine    en: "AJP-3.1 §5. Boarding ops require interoperable comms with civilian authorities; mixed environment."
+                   es: "AJP-3.1 §5. Visitas con interop civil; entorno mixto."
+       serials: [S1, S2, S3, S10, S12]
+
+UC005  Naval Gunfire Support / Amphibious
+       threat=NotFriend  classification=NS  criticality=3
+       title       en: "Naval Gunfire Support / Amphibious"
+                   es: "Apoyo de Fuego Naval / Anfibio"
+       tempo       en: "Burst (CFF) + continuous voice"
+                   es: "Burst (CFF) + voz continua"
+       zones       en: "Amphibious Objective Area · CoI: SACC, FSCC"
+                   es: "AOA Anfibia · CoI: SACC, FSCC"
+       ierBase     en: "Call-For-Fire · Target list · Cease-fire authority"
+                   es: "Petición de fuego · Lista de objetivos · Autoridad de alto el fuego"
+       doctrine    en: "AJP-3.1 §4 + AJP-3.2 link. Joint Fires require authenticated CFF, target deconfliction and sub-second weapons-release coordination."
+                   es: "AJP-3.1 §4 + enlace AJP-3.2. Fuegos Conjuntos exigen CFF autenticado, desconflicto y coordinación sub-segundo."
+       serials: [S1, S2, S3, S10]
+
+UC006  Mine Warfare (MIW / MCM)
+       threat=NotFriend  classification=NS  criticality=2
+       title       en: "Mine Warfare (MIW / MCM)"
+                   es: "Guerra de Minas (MIW / MCM)"
+       tempo       en: "Scheduled SITREP every 15 min + on-detection"
+                   es: "SITREP programado cada 15 min + por detección"
+       zones       en: "Q-Routes & Mine Danger Areas · CoI: MCMC"
+                   es: "Q-Routes y MDA · CoI: MCMC"
+       ierBase     en: "Sonar mosaic · Mine plot · Sweep status"
+                   es: "Mosaico sonar · Plot de mina · Estado de barrido"
+       doctrine    en: "AJP-3.1 §4. MCM task group shares high-resolution sonar imagery and mine charts; integrity over confidentiality."
+                   es: "AJP-3.1 §4. Grupo MCM comparte imagen sonar HR y cartas; integridad sobre confidencialidad."
+       serials: [S1, S2, S7, S11]
+
+UC007  Search and Rescue (SAR)
+       threat=Friend  classification=NU  criticality=2
+       title       en: "Search and Rescue (SAR)"
+                   es: "Búsqueda y Rescate (SAR)"
+       tempo       en: "Continuous until recovery"
+                   es: "Continuo hasta recuperación"
+       zones       en: "SRR (IMO) · CoI: MRCC, civilian assets"
+                   es: "SRR (OMI) · CoI: MRCC, medios civiles"
+       ierBase     en: "Position datum · Casualty status · MEDEVAC request"
+                   es: "Datum de posición · Estado de víctimas · Petición MEDEVAC"
+       doctrine    en: "AJP-3.1 §5. Humanitarian, multi-actor; GMDSS distress mandatory; civil HF/VHF interop preserved."
+                   es: "AJP-3.1 §5. Humanitario, multi-actor; socorro GMDSS obligatorio; interop civil HF/VHF preservada."
+       serials: [S1, S2, S3, S7, S12]
+
+UC008  Strategic C2 — MARCOM Directive
+       threat=Mixed  classification=MS  criticality=3
+       title       en: "Strategic C2 — MARCOM Directive"
+                   es: "C2 Estratégico — Directiva MARCOM"
+       tempo       en: "On-event + daily scheduled SLOTS"
+                   es: "Por evento + slots diarios programados"
+       zones       en: "Theatre-wide · CoI: NATO MARCOM, Component Commanders"
+                   es: "A nivel teatro · CoI: NATO MARCOM, Comandantes Componentes"
+       ierBase     en: "Strategic order · ROE change · INTSUM"
+                   es: "Orden estratégica · Cambio de ROE · INTSUM"
+       doctrine    en: "AJP-3.1 §3 + AJP-6 §2. ROE changes and strategic orders demand high-assurance protected SATCOM and message authentication."
+                   es: "AJP-3.1 §3 + AJP-6 §2. Cambios de ROE y órdenes estratégicas exigen SATCOM protegida y autenticación de mensaje."
+       serials: [S1, S6, S8, S9]
+
+UC009  EMCON Alpha — Stealth Reception
+       threat=NotFriend  classification=NS  criticality=3
+       title       en: "EMCON Alpha — Stealth Reception"
+                   es: "EMCON Alpha — Recepción Silenciosa"
+       tempo       en: "Receive-only, scheduled FLEET BROADCAST windows"
+                   es: "Solo recepción, ventanas FLEET BROADCAST programadas"
+       zones       en: "Sensitive AOR · CoI: organic only"
+                   es: "AOR sensible · CoI: solo orgánico"
+       ierBase     en: "Fleet broadcast · INTSUM · Re-keying material"
+                   es: "Difusión a la flota · INTSUM · Material de re-key"
+       doctrine    en: "AJP-3.1 §4 + AJP-3.6. Strict radio silence on transmit; only LPI/LPD passive reception waveforms permitted."
+                   es: "AJP-3.1 §4 + AJP-3.6. Silencio radio estricto; sólo recepción pasiva LPI/LPD permitida."
+       serials: [S6, S8]
+
+UC010  Multinational Exercise — FMN Spiral 4
+       threat=Friend  classification=NR  criticality=2
+       title       en: "Multinational Exercise — FMN Spiral 4"
+                   es: "Ejercicio Multinacional — FMN Spiral 4"
+       tempo       en: "Continuous · scheduled cross-domain syncs"
+                   es: "Continuo · sincronizaciones cross-dominio programadas"
+       zones       en: "Exercise OPAREA · CoI: FMN affiliates"
+                   es: "OPAREA del ejercicio · CoI: afiliados FMN"
+       ierBase     en: "RMP (XCTC) · OVLY2/3 overlays · JREAP-C tracks"
+                   es: "RMP (XCTC) · Overlays OVLY2/3 · Pistas JREAP-C"
+       doctrine    en: "AJP-3.1 §6 + STANAG 4711. Federated participants exchange RMP via PFL-00404 maritime profile (XCTC/OVLY messages, JREAP-C over IP)."
+                   es: "AJP-3.1 §6 + STANAG 4711. Participantes federados intercambian RMP vía PFL-00404 (XCTC/OVLY, JREAP-C/IP)."
+       serials: [S1, S2, S3, S7, S8, S9, S11, S12]
+
+
+KEYBOARD AND ACCESSIBILITY
+--------------------------
+- ESC closes the ASCII modal.
+- Click on the modal backdrop closes it; clicks inside the card do not.
+- Lucide icons must be re-initialised after every render
+  (`lucide.createIcons()`).
+- All buttons keyboard-focusable.
+
+
+VERIFICATION CHECKLIST  (before declaring done)
+-----------------------------------------------
+1. The deliverable is ONE `.html` file, ~1.3-1.4 MB. No `assets/` folder.
+2. `<head>` contains exactly three inlined dependency blocks (Tailwind in
+   `<script>`, Lucide in `<script>`, fonts CSS with base64 woff2 URIs in
+   `<style>`) — and zero references to `cdn.tailwindcss.com`, `unpkg.com`,
+   or `fonts.googleapis.com`. No `assets/` paths anywhere.
+3. 12 Serials, 10 Use Cases present. Counters in the stats card show
+   `12`, `10`, and the unfiltered total of UC.serials.length:
+   6+7+7+5+4+4+5+4+2+8 = 52.
+4. Each Serial has a complete `ier:{who,what,when,protection,precedence,
+   volume}` record with EN and ES strings.
+5. Each UC card renders one `kv-table` per applicable Serial in a
+   variable-left / value-right layout with 14 rows in the order specified
+   above (6 IER + 8 context).
+6. Risk LPI/LPD cell shows the 5-dot meter, the `n/5 LPI+LPD/LPI/None`
+   label, AND a one-sentence narrative beneath the dots.
+7. ASCII modal opens; both formats render; both Copy and Download work;
+   ESC and backdrop close it.
+8. Lang toggle re-renders aside, TOC, filters, all UC cards, and the
+   modal preview if open.
+9. Classification tags use the four palette colours (NU green, NR blue,
+   NS red, MS magenta).
+10. CSV downloads with `;` separator, BOM, UTF-8.
+11. ASCII export has 18 columns in the order specified (UC, Serial, Topo,
+    six IER columns, Frequencies/Equipment, TimeWindow, Environment,
+    Zones/CoI, Availability, Class, LPI/LPD score, LPI/LPD narrative,
+    Attack Surface).
+12. No console errors. No network requests after initial document load.
+
+================================================================================
+END OF PROMPT 002
+================================================================================
